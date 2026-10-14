@@ -1,0 +1,23 @@
+# Downloaded upstream source trees
+linux-5.15/
+u-boot-2022.04/
+busybox-1.35.0/
+
+# Intermediate build files
+*.o
+*.cmd
+*.mod
+*.mod.c
+Module.symvers
+modules.order
+.tmp_versions/
+
+# Temporary editor files
+*~
+*.swp
+*.swo
+*.tmp
+
+# OS-generated files
+.DS_Store
+Thumbs.db
