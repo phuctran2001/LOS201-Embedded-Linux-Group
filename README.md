@@ -15,7 +15,7 @@ supporting evidence.
 
 - [Team Members](#team-members)
 - [Technical Platform](#technical-platform)
-- [Coursework and Upload Information](#coursework-and-upload-information)
+- [Coursework Overview](#coursework-overview)
 - [Repository Organization](#repository-organization)
 - [LAB01 – ARM Linux System Build and Boot](#lab01--arm-linux-system-build-and-boot)
 - [LAB02 – Device Driver and Filesystem Management](#lab02--device-driver-and-filesystem-management)
@@ -64,17 +64,17 @@ match the architecture and kernel build of the system where they are loaded.
 Exact commands and environment details belong in the documentation for each
 coursework item.
 
-## Coursework and Upload Information
+## Coursework Overview
 
 The coursework consists of three laboratory exercises and two assignments covering ARM Linux system development, device drivers, flash filesystems, debugging, performance analysis, and a sensor monitoring application. The table below summarizes each coursework item and identifies the team member responsible for its implementation and documentation.
 
-| Coursework | Main Topic | Completion | Repository Materials | Contributor |
-|---|---|---|---|---|
-| LAB01| ARM Linux build and boot | Completed | Uploaded | Trần Thiên Phúc |
-| LAB02| Device driver, procfs/sysfs, and JFFS2 | Completed | Uploaded | Võ Quốc Thịnh |
-| LAB03 | Debugging, memory analysis, profiling, and latency | Completed | Upload | Đinh Quang Ngọc |
-| Assignment 1 | IOCTL and miscellaneous device drivers | Completed | Uploaded | Nguyễn Huy Hoàng |
-| Assignment 2 | Sensor Monitoring System | Completed | Upload | Trần Thiên Phúc |
+| Coursework | Main Topic | Contributor |
+|---|---|---|
+| LAB01 | ARM Linux system build and boot | Trần Thiên Phúc |
+| LAB02 | Device driver, procfs/sysfs, and JFFS2 | Võ Quốc Thịnh |
+| LAB03 | Debugging, memory analysis, profiling, and latency | Đinh Quang Ngọc |
+| Assignment 1 | IOCTL and miscellaneous device drivers | Nguyễn Huy Hoàng |
+| Assignment 2 | Sensor Monitoring System | Trần Thiên Phúc |
 
 The following sections present the objectives, technical scope, and architecture of each coursework item. Source code, configuration files, testing evidence, and technical reports provide the basis for reviewing the work and understanding each member’s contribution.
 
