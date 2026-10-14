@@ -27,12 +27,12 @@ supporting evidence.
 
 ## Team Members
 
-| Full Name | Student ID |
-|---|---|
-| Trần Thiên Phúc | SE203798 |
-| Nguyễn Huy Hoàng | SE203347 |
-| Đinh Quang Ngọc | SE201573 |
-| Võ Quốc Thịnh | SE200595 |
+| Full Name | Student ID | Assigned Coursework |
+|---|---|---|
+| Trần Thiên Phúc | SE203798 | LAB01 and Assignment 2 |
+| Nguyễn Huy Hoàng | SE203347 | Assignment 1 |
+| Đinh Quang Ngọc | SE201573 | LAB03 |
+| Võ Quốc Thịnh | SE200595 | LAB02 |
 
 **Repository owner:** Trần Thiên Phúc.
 
@@ -66,21 +66,17 @@ coursework item.
 
 ## Coursework and Upload Information
 
-All five coursework items are reported as completed by the team. Repository
-publication is separate from practical completion: the materials for LAB03
-and Assignment 2 are awaiting upload by their respective contributors.
+The coursework consists of three laboratory exercises and two assignments covering ARM Linux system development, device drivers, flash filesystems, debugging, performance analysis, and a sensor monitoring application. The table below summarizes each coursework item and identifies the team member responsible for its implementation and documentation.
 
 | Coursework | Main Topic | Completion | Repository Materials | Contributor |
 |---|---|---|---|---|
-| [LAB01](lab01/) | ARM Linux build and boot | Completed | Uploaded | Trần Thiên Phúc |
-| [LAB02](lab02/) | Device driver, procfs/sysfs, and JFFS2 | Completed | Uploaded | Trần Thiên Phúc |
-| LAB03 | Debugging, memory analysis, profiling, and latency | Completed — team-reported | Upload pending | To be added |
-| [Assignment 1](asgn01/Assignment%201/) | IOCTL and miscellaneous device drivers | Completed | Uploaded | Nguyễn Huy Hoàng |
-| Assignment 2 | Sensor Monitoring System | Completed — team-reported | Upload pending | To be added |
+| LAB01| ARM Linux build and boot | Completed | Uploaded | Trần Thiên Phúc |
+| LAB02| Device driver, procfs/sysfs, and JFFS2 | Completed | Uploaded | Võ Quốc Thịnh |
+| LAB03 | Debugging, memory analysis, profiling, and latency | Completed | Upload | Đinh Quang Ngọc |
+| Assignment 1 | IOCTL and miscellaneous device drivers | Completed | Uploaded | Nguyễn Huy Hoàng |
+| Assignment 2 | Sensor Monitoring System | Completed | Upload | Trần Thiên Phúc |
 
-LAB03 and Assignment 2 are described below by their coursework scope. Their
-implementation details, measured results, contributor names, and file links
-will be added with the actual submissions.
+The following sections present the objectives, technical scope, and architecture of each coursework item. Source code, configuration files, testing evidence, and technical reports provide the basis for reviewing the work and understanding each member’s contribution.
 
 ## Repository Organization
 
@@ -90,17 +86,12 @@ will be added with the actual submissions.
 | `lab01/rootfs/` | Selected startup files for the root filesystem |
 | `lab01/evidence/` | Kernel build and troubleshooting logs |
 | `lab01/report/` | LAB01 Word and PDF reports |
-| `lab02/driver/` | Character device driver source and Makefile |
-| `lab02/rootfs/` | Startup script with automatic driver loading |
-| `lab02/jffs2/` | JFFS2 image and test data |
-| `lab02/evidence/` | Selected kernel build logs |
-| `lab02/report/` | LAB02 Word and PDF reports |
 | `asgn01/Assignment 1/task1_ioctl/` | IOCTL driver, shared header, module, and tests |
 | `asgn01/Assignment 1/task2_misc/` | Counter driver, module, and tests |
 | `asgn01/Assignment 1/logs/` | Test output and recorded QEMU/kernel sessions |
 | `asgn01/Assignment 1/bao_cao/` | Assignment 1 PDF report |
 
-LAB03 and Assignment 2 directories will be linked after upload. The table
+LAB02, LAB03, and Assignment 2 directories will be linked after upload. The table
 above describes the existing repository layout rather than a proposed
 directory tree.
 
@@ -160,7 +151,11 @@ runtime evidence.
 
 ## LAB02 – Device Driver and Filesystem Management
 
-**Contributor:** Trần Thiên Phúc.
+**Contributor:** Võ Quốc Thịnh.
+
+**Completion:** reported completed by the team.
+
+**Repository upload:** pending.
 
 ### Overview
 
@@ -170,28 +165,26 @@ during userspace startup.
 
 ### Technical Scope
 
-- **Character device:** `lab2_driver` supports `open`, `read`, `write`, and
-  `release` through `/dev/lab2`, with major number `240` and minor `0`.
-- **Userspace/kernel data exchange:** driver operations use
-  `copy_from_user()` and `copy_to_user()` for buffer transfers.
-- **Shared state:** the implementation includes a 1024-byte buffer and mutex
-  protection for shared driver data.
-- **procfs:** `/proc/lab2_info` exposes a readable summary of driver state.
-- **sysfs:** attributes under `/sys/class/lab2_class/lab2/` expose
-  `buffer_len`, `open_count`, and `last_data`.
-- **MTD/JFFS2:** the filesystem exercise covers flash simulation, filesystem
-  image creation, read/write operations, and unmount/remount verification.
-- **Boot integration:** `rcS` mounts virtual filesystems, loads the module,
-  and ensures that `/dev/lab2` is available for testing.
+| Part | Focus |
+|---|---|
+| A – Character device driver | Build and load a kernel module, expose a device node, and test open/read/write/release operations |
+| B – procfs and sysfs | Export driver state and inspect the relationship between device operations, counters, and diagnostic attributes |
+| C – MTD/JFFS2 | Simulate flash storage, create a JFFS2 image, and verify filesystem operations and unmount/remount behavior |
+| D – Boot integration | Prepare initialization files and automate module loading during startup |
+
+The driver exercises userspace/kernel data transfers, shared-state
+synchronization, and module resource cleanup. The submitted documentation
+will identify the actual device names, major/minor numbers, buffer size,
+kernel build, and test results used by Thinh.
 
 ### Driver Interfaces
 
 ```mermaid
 flowchart TD
     A["Userspace application"] --> V["VFS and file_operations"]
-    V --> D["lab2_driver"]
+    V --> D["Character device driver"]
     D --> B["Buffer and counters"]
-    B --> P["/proc/lab2_info"]
+    B --> P["procfs diagnostics"]
     B --> S["sysfs attributes"]
     A --> P
     A --> S
@@ -199,18 +192,13 @@ flowchart TD
 
 The character device transfers application data. procfs and sysfs provide
 additional views of driver state. The MTD/JFFS2 experiment is a separate
-filesystem exercise, not storage implemented by `lab2_driver`.
+filesystem exercise.
 
-### Available Materials
+### Submission Materials
 
-- [Driver source and Makefile](lab02/driver/)
-- [Automatic startup script](lab02/rootfs/etc/init.d/rcS)
-- [JFFS2 image and test data](lab02/jffs2/)
-- [Kernel build evidence](lab02/evidence/)
-- [LAB02 report](lab02/report/)
-
-The JFFS2 image is a binary artifact. Its contents should be inspected with
-appropriate filesystem tools rather than GitHub's text preview.
+Thinh will upload his own driver source, Makefile, startup files, test
+scripts, JFFS2 materials, runtime evidence, and technical report using his
+GitHub account. Links will be added when those files are available.
 
 ## LAB03 – Debugging and Performance Analysis
 
@@ -218,7 +206,7 @@ appropriate filesystem tools rather than GitHub's text preview.
 
 **Repository upload:** pending.
 
-**Contributor:** to be added with the submission.
+**Contributor:** Đinh Quang Ngọc.
 
 ### Overview
 
@@ -306,7 +294,7 @@ They remain associated with his original commits and pull requests.
 
 **Repository upload:** pending.
 
-**Contributor:** to be added with the submission.
+**Contributor:** Trần Thiên Phúc.
 
 ### Overview
 
@@ -362,8 +350,9 @@ report, and a demonstration video or link.
 ### Currently Available
 
 - [LAB01 Word/PDF reports](lab01/report/)
-- [LAB02 Word/PDF reports](lab02/report/)
 - [Assignment 1 PDF report](asgn01/Assignment%201/bao_cao/)
+
+Reports for LAB02, LAB03, and Assignment 2 will be linked with their uploads.
 
 ### Documentation Conventions
 
@@ -395,15 +384,6 @@ documentation.
 Commit history and pull requests document individual contributions. Practical
 completion and the availability of files in this repository are recorded
 separately; pending uploads remain the responsibility of their contributors.
-
-## Archived Work
-
-LAB01 and LAB02 were completed by Trần Thiên Phúc before this group
-repository was created and were subsequently uploaded as archived work.
-Their upload commits do not represent a step-by-step development history.
-
-For subsequent work and revisions, the team records changes incrementally
-through commits and pull requests.
 
 ## References
 
