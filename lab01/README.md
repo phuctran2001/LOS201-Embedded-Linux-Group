@@ -12,6 +12,7 @@ The completed practical work is documented in the [PDF report](report/BAO_CAO_LA
 
 ## Contents
 
+- [Quick Start](#quick-start)
 - [Platform](#platform)
 - [Repository Materials](#repository-materials)
 - [Build Workflow](#build-workflow)
@@ -49,10 +50,45 @@ The original completed workspace is `~/LOS201/lab01`. The rebuild example below 
 | [rootfs/etc/inittab](rootfs/etc/inittab) | BusyBox init actions and serial-console shell |
 | [rootfs/etc/init.d/rcS](rootfs/etc/init.d/rcS) | Virtual filesystem mounts and hostname setup |
 | [rootfs/etc/hostname](rootfs/etc/hostname) | Target hostname |
-| [evidence/](evidence/) | Kernel build and ARM instruction-set troubleshooting logs |
+| [output/zImage](output/zImage) | Tested ARM Linux kernel image |
+| [output/vexpress-v2p-ca9.dtb](output/vexpress-v2p-ca9.dtb) | Board device tree |
+| [output/rootfs-final.cpio.gz](output/rootfs-final.cpio.gz) | Tested BusyBox initramfs |
+| [evidence/boot_validation.log](evidence/boot_validation.log) | Boot and runtime verification transcript; terminal formatting normalized |
+| [evidence/](evidence/) | Build, troubleshooting, and runtime validation logs |
 | [report/](report/) | Technical report and embedded screenshots |
 
-The `rootfs/` directory in this repository contains selected startup files. BusyBox binaries, applet symlinks, and the remaining filesystem directories are generated during the build. Upstream source trees and boot images are kept in the local workspace.
+The `rootfs/` directory in this repository contains selected startup files. BusyBox binaries, applet symlinks, and the remaining filesystem directories are generated during the build. Upstream source trees are kept locally; the tested Linux boot images are included in `output/`.
+
+## Quick Start
+
+Boot the included, tested Linux images without rebuilding them. Install `qemu-system-arm` on the Ubuntu host first:
+
+```bash
+sudo apt install qemu-system-arm
+```
+
+From the root of your repository clone, run:
+
+```bash
+qemu-system-arm \
+  -M vexpress-a9 \
+  -cpu cortex-a9 \
+  -m 512M \
+  -smp 2 \
+  -nographic \
+  -kernel lab01/output/zImage \
+  -dtb lab01/output/vexpress-v2p-ca9.dtb \
+  -initrd lab01/output/rootfs-final.cpio.gz \
+  -append 'console=ttyAMA0,115200 rdinit=/init mem=512M'
+```
+
+Press **Enter** when prompted to activate the console. Expect the LAB01 welcome message and an interactive shell.
+
+This command boots Linux directly through QEMU. See [U-Boot Console](#u-boot-console) for the separate bootloader experiment.
+
+The [boot and runtime validation log](evidence/boot_validation.log) records Linux 5.15.0 on ARMv7, hostname `embedded-lab`, two online CPUs, mounted virtual filesystems, init at PID 1, and the required device nodes.
+
+Exit QEMU with **Ctrl+A**, release the keys, then press **X**.
 
 ## Build Workflow
 
