@@ -11,6 +11,8 @@ The coursework is organized so that the lecturer and other readers can find
 each contributor's source code, configuration files, technical reports, and
 supporting evidence.
 
+**Start here:** [LAB01 Quick Start](lab01/README.md#quick-start) · [LAB02 materials](lab02/) · [Assignment 1 guide](asgn01/Assignment%201/README.md)
+
 ## Contents
 
 - [Team Members](#team-members)
@@ -70,34 +72,32 @@ The coursework consists of three laboratory exercises and two assignments coveri
 
 | Coursework | Main Topic | Contributor |
 |---|---|---|
-| LAB01 | ARM Linux system build and boot | Trần Thiên Phúc |
-| LAB02 | Device driver, procfs/sysfs, and JFFS2 | Võ Quốc Thịnh |
-| LAB03 | Debugging, memory analysis, profiling, and latency | Đinh Quang Ngọc |
-| Assignment 1 | IOCTL and miscellaneous device drivers | Nguyễn Huy Hoàng |
-| Assignment 2 | Sensor Monitoring System | Trần Thiên Phúc |
+| [LAB01](lab01/README.md) | ARM Linux system build and boot | Trần Thiên Phúc |
+| [LAB02](lab02/) | Device driver, procfs/sysfs, and JFFS2 | Võ Quốc Thịnh |
+| [LAB03](#lab03--debugging-and-performance-analysis) | Debugging, memory analysis, profiling, and latency | Đinh Quang Ngọc |
+| [Assignment 1](asgn01/Assignment%201/README.md) | IOCTL and miscellaneous device drivers | Nguyễn Huy Hoàng |
+| [Assignment 2](#assignment-2--sensor-monitoring-system) | Sensor Monitoring System | Trần Thiên Phúc |
 
 The following sections present the objectives, technical scope, and architecture of each coursework item. Source code, configuration files, testing evidence, and technical reports provide the basis for reviewing the work and understanding each member’s contribution.
 
 ## Repository Organization
 
-| Existing Directory | Contents |
+| Directory / File | Contents |
 |---|---|
-| `lab01/configs/` | Linux kernel and BusyBox configuration files |
-| `lab01/rootfs/` | Selected startup files for the root filesystem |
-| `lab01/evidence/` | Kernel build and troubleshooting logs |
-| `lab01/report/` | LAB01 Word and PDF reports |
-| `asgn01/Assignment 1/task1_ioctl/` | IOCTL driver, shared header, module, and tests |
-| `asgn01/Assignment 1/task2_misc/` | Counter driver, module, and tests |
-| `asgn01/Assignment 1/logs/` | Test output and recorded QEMU/kernel sessions |
-| `asgn01/Assignment 1/bao_cao/` | Assignment 1 PDF report |
+| [lab01/README.md](lab01/README.md) | LAB01 build guide, Quick Start, verification and troubleshooting |
+| [lab01/configs/](lab01/configs/) | Linux, U-Boot and BusyBox configurations |
+| [lab01/rootfs/](lab01/rootfs/) | Selected root filesystem startup files |
+| [lab01/output/](lab01/output/) | Tested ARM kernel image, board DTB and initramfs |
+| [lab01/evidence/](lab01/evidence/) | Kernel build, troubleshooting, boot and runtime validation logs |
+| [lab01/report/](lab01/report/) | LAB01 Word and PDF reports |
+| [lab02/driver/](lab02/driver/) | Character device driver source and kernel module Makefile |
+| [lab02/rootfs/](lab02/rootfs/) | Boot integration files and device/procfs test scripts |
+| [lab02/evidence/](lab02/evidence/) | Boot, driver, diagnostic interface and MTD/JFFS2 logs |
+| [asgn01/Assignment 1/](asgn01/Assignment%201/) | Assignment 1 guide, driver sources, modules, tests, logs and report |
 
-LAB02, LAB03, and Assignment 2 directories will be linked after upload. The table
-above describes the existing repository layout rather than a proposed
-directory tree.
+The table links to materials currently present in the repository. LAB03 and Assignment 2 are introduced below through their coursework objectives and assigned contributors.
 
-Complete upstream Linux, U-Boot, and BusyBox source trees are not included.
-The repository contains selected coursework materials, and additional build
-outputs or reproduction instructions may be provided by each contributor.
+Upstream source trees can be obtained using the versions and download instructions in the individual guides. Build and execution details belong with each coursework submission.
 
 ## LAB01 – ARM Linux System Build and Boot
 
@@ -120,42 +120,76 @@ minimal userspace construction, and booting Linux in QEMU.
 | Initramfs | Package the root filesystem for use by QEMU |
 | Verification | Inspect the running kernel, CPU, memory, device nodes, mounts, and processes |
 
-### Component Relationship
+### Build and Execution Architecture
 
 ```mermaid
-flowchart TD
-    T["ARM cross-compilation toolchain"] --> K["Linux kernel build"]
-    T --> U["U-Boot build"]
-    T --> B["BusyBox build"]
-    K --> I["zImage and board DTB"]
-    B --> R["Root filesystem and initramfs"]
-    I --> Q["QEMU Linux system"]
-    R --> Q
-    U --> C["U-Boot console and bootloader experiments"]
+flowchart TB
+    HOST["Ubuntu host and ARM cross-toolchain"]
+
+    subgraph BUILD["1. Build components"]
+        KERNEL["Linux 5.15"]
+        BUSYBOX["BusyBox 1.35.0"]
+        UBOOT["U-Boot 2022.04"]
+    end
+
+    subgraph FILES["2. Prepare boot files"]
+        KIMG["zImage and board DTB"]
+        ROOTFS["BusyBox rootfs and startup scripts"]
+        INITRAMFS["rootfs-final.cpio.gz"]
+        UIMG["u-boot executable"]
+    end
+
+    subgraph RUN["3. QEMU experiments"]
+        LINUX["Direct Linux boot: vexpress-a9"]
+        CONSOLE["U-Boot console: board and environment"]
+    end
+
+    CHECK["Verify shell, CPU, memory, mounts and devices"]
+    HOST --> KERNEL
+    HOST --> BUSYBOX
+    HOST --> UBOOT
+    KERNEL --> KIMG
+    BUSYBOX --> ROOTFS
+    ROOTFS --> INITRAMFS
+    UBOOT --> UIMG
+    KIMG --> LINUX
+    INITRAMFS --> LINUX
+    UIMG --> CONSOLE
+    LINUX --> CHECK
+
+    style BUILD fill:#f8fafc,stroke:#94a3b8,color:#0f172a
+    style FILES fill:#f8fafc,stroke:#94a3b8,color:#0f172a
+    style RUN fill:#f8fafc,stroke:#94a3b8,color:#0f172a
+
+    classDef build fill:#dbeafe,stroke:#2563eb,color:#172554,stroke-width:2px;
+    classDef artifact fill:#ede9fe,stroke:#7c3aed,color:#2e1065,stroke-width:2px;
+    classDef runtime fill:#dcfce7,stroke:#16a34a,color:#14532d,stroke-width:2px;
+    classDef terminal fill:#ffedd5,stroke:#ea580c,color:#431407,stroke-width:2px;
+    class HOST,KERNEL,BUSYBOX,UBOOT build;
+    class KIMG,ROOTFS,INITRAMFS,UIMG artifact;
+    class LINUX,CHECK runtime;
+    class CONSOLE terminal;
 ```
 
-The diagram separates the Linux direct-boot inputs from the U-Boot
-experiments. A QEMU command using `-kernel`, `-dtb`, and `-initrd` boots Linux
-directly; it does not demonstrate a U-Boot-mediated Linux boot by itself.
+Blue blocks represent the host and build components; purple blocks are generated files; green blocks show the Linux runtime and checks; orange identifies the separate bootloader experiment.
+
+The tested Linux command passes `zImage`, the board DTB and the initramfs directly to QEMU. U-Boot is built and exercised in its own console session. The [LAB01 guide](lab01/README.md) explains both execution paths.
 
 ### Available Materials
 
-- [Kernel and BusyBox configurations](lab01/configs/)
+- [LAB01 guide and Quick Start](lab01/README.md#quick-start)
+- [Linux, U-Boot and BusyBox configurations](lab01/configs/)
 - [Root filesystem startup files](lab01/rootfs/)
-- [Build and troubleshooting evidence](lab01/evidence/)
-- [LAB01 report](lab01/report/)
+- [Tested boot images](lab01/output/)
+- [Boot and runtime validation log](lab01/evidence/boot_validation.log)
+- [Build and troubleshooting logs](lab01/evidence/)
+- [Word and PDF reports](lab01/report/)
 
-The report explains the build process, encountered issues, and recorded boot
-results. Build logs document compilation; the report provides the associated
-runtime evidence.
+The runtime log records Linux 5.15.0 on ARMv7, hostname `embedded-lab`, two online CPUs, the required virtual filesystem mounts, init at PID 1 and the expected device nodes. The reports explain the practical workflow and include screenshots.
 
 ## LAB02 – Device Driver and Filesystem Management
 
 **Contributor:** Võ Quốc Thịnh.
-
-**Completion:** reported completed by the team.
-
-**Repository upload:** pending.
 
 ### Overview
 
@@ -172,33 +206,74 @@ during userspace startup.
 | C – MTD/JFFS2 | Simulate flash storage, create a JFFS2 image, and verify filesystem operations and unmount/remount behavior |
 | D – Boot integration | Prepare initialization files and automate module loading during startup |
 
-The driver exercises userspace/kernel data transfers, shared-state
-synchronization, and module resource cleanup. The submitted documentation
-will identify the actual device names, major/minor numbers, buffer size,
-kernel build, and test results used by Thinh.
+The uploaded driver exposes `/dev/lab2` with major number `240` and minor number `0`. It maintains a 1024-byte buffer, its current data length and an open counter. procfs and sysfs provide diagnostic views of this state.
 
 ### Driver Interfaces
 
 ```mermaid
-flowchart TD
-    A["Userspace application"] --> V["VFS and file_operations"]
-    V --> D["Character device driver"]
-    D --> B["Buffer and counters"]
-    B --> P["procfs diagnostics"]
-    B --> S["sysfs attributes"]
-    A --> P
-    A --> S
+flowchart TB
+    subgraph USER["Userspace"]
+        TEST["Shell commands and test scripts"]
+    end
+
+    subgraph INTERFACES["Kernel interfaces"]
+        DEV["/dev/lab2"]
+        PROC["/proc/lab2_info"]
+        SYS["sysfs device attributes"]
+    end
+
+    subgraph DRIVER["Kernel module"]
+        OPS["open / read / write / release"]
+        PROCSHOW["procfs statistics callback"]
+        SYSSHOW["sysfs attribute callbacks"]
+        STATE["1024-byte buffer, data length and open count"]
+    end
+
+    TEST -->|"device operations"| DEV
+    TEST -->|"read statistics"| PROC
+    TEST -->|"read attributes"| SYS
+    DEV --> OPS
+    PROC --> PROCSHOW
+    SYS --> SYSSHOW
+    OPS <-->|"data and state"| STATE
+    PROCSHOW -->|"inspect"| STATE
+    SYSSHOW -->|"inspect"| STATE
+
+    style USER fill:#f8fafc,stroke:#94a3b8,color:#0f172a
+    style INTERFACES fill:#f8fafc,stroke:#94a3b8,color:#0f172a
+    style DRIVER fill:#f8fafc,stroke:#94a3b8,color:#0f172a
+
+    classDef app fill:#dbeafe,stroke:#2563eb,color:#172554,stroke-width:2px;
+    classDef interface fill:#ede9fe,stroke:#7c3aed,color:#2e1065,stroke-width:2px;
+    classDef callback fill:#dcfce7,stroke:#16a34a,color:#14532d,stroke-width:2px;
+    classDef storage fill:#ffedd5,stroke:#ea580c,color:#431407,stroke-width:2px;
+    class TEST app;
+    class DEV,PROC,SYS interface;
+    class OPS,PROCSHOW,SYSSHOW callback;
+    class STATE storage;
 ```
 
-The character device transfers application data. procfs and sysfs provide
-additional views of driver state. The MTD/JFFS2 experiment is a separate
-filesystem exercise.
+The arrows show the routes used to access the driver and inspect its state. Character device operations pass through `file_operations`; procfs uses a `seq_file` callback; sysfs exposes read-only device attributes.
 
-### Submission Materials
+| Interface | Purpose |
+|---|---|
+| `/dev/lab2` | Open, read, write and release the character device |
+| `/proc/lab2_info` | Read driver statistics and the last stored data |
+| `/sys/class/lab2_class/lab2/` | Read `buffer_len`, `open_count` and `last_data` attributes |
 
-Thinh will upload his own driver source, Makefile, startup files, test
-scripts, JFFS2 materials, runtime evidence, and technical report using his
-GitHub account. Links will be added when those files are available.
+MTD/JFFS2 is a separate flash-filesystem exercise. Its [recorded session](lab02/evidence/mtd_jffs2.txt) includes image creation, mounting, file operations and persistence checks across an unmount/remount cycle.
+
+### Available Materials
+
+- [Driver source and Makefile](lab02/driver/)
+- [Boot integration files](lab02/rootfs/etc/)
+- [Device and procfs/sysfs test scripts](lab02/rootfs/usr/bin/)
+- [Boot log](lab02/evidence/boot_log.txt)
+- [Character device test session](lab02/evidence/driver_test.txt)
+- [procfs/sysfs test session](lab02/evidence/procfs_test.txt)
+- [MTD/JFFS2 session](lab02/evidence/mtd_jffs2.txt)
+
+The assigned contributor maintains the LAB02 build/run documentation and report alongside these materials.
 
 ## LAB03 – Debugging and Performance Analysis
 
@@ -305,21 +380,53 @@ scheduling in a Sensor Monitoring System (SMS).
 ### Coursework Architecture
 
 ```mermaid
-flowchart TD
-    D["Sensor kernel driver"] --> S["Sensor thread"]
-    S --> B["Synchronized circular buffer"]
-    B --> P["Processor thread"]
-    P --> A["Alarm queue"]
-    A --> T["Alert thread"]
-    T --> O["Console alerts"]
-    P --> Q["Log queue"]
-    T --> Q
-    Q --> L["Logger thread"]
-    L --> F["Log file"]
+flowchart TB
+    subgraph KERNEL["Kernel interface"]
+        SENSOR["Simulated sensor driver: /dev/sms_sensor"]
+    end
+
+    subgraph APP["Application threads"]
+        ACQUIRE["1. Sensor thread"]
+        BUFFER["Synchronized circular buffer"]
+        PROCESS["2. Processor thread"]
+        ALARMQ["Alarm message queue"]
+        ALERT["3. Alert thread"]
+        LOGQ["Log message queue"]
+        LOGGER["4. Logger thread"]
+
+        ACQUIRE -->|"enqueue samples"| BUFFER
+        BUFFER -->|"dequeue samples"| PROCESS
+        PROCESS -->|"threshold events"| ALARMQ
+        ALARMQ --> ALERT
+        PROCESS -->|"processed samples"| LOGQ
+        ALERT -->|"alert records"| LOGQ
+        LOGQ --> LOGGER
+    end
+
+    subgraph OUTPUT["Application outputs"]
+        TERMINAL["Console alerts"]
+        LOGFILE["Persistent log file"]
+    end
+
+    SENSOR -->|"sensor readings"| ACQUIRE
+    ALERT --> TERMINAL
+    LOGGER --> LOGFILE
+
+    style KERNEL fill:#f8fafc,stroke:#94a3b8,color:#0f172a
+    style APP fill:#f8fafc,stroke:#94a3b8,color:#0f172a
+    style OUTPUT fill:#f8fafc,stroke:#94a3b8,color:#0f172a
+
+    classDef kernel fill:#ede9fe,stroke:#7c3aed,color:#2e1065,stroke-width:2px;
+    classDef thread fill:#dbeafe,stroke:#2563eb,color:#172554,stroke-width:2px;
+    classDef shared fill:#dcfce7,stroke:#16a34a,color:#14532d,stroke-width:2px;
+    classDef output fill:#ffedd5,stroke:#ea580c,color:#431407,stroke-width:2px;
+    class SENSOR kernel;
+    class ACQUIRE,PROCESS,ALERT,LOGGER thread;
+    class BUFFER,ALARMQ,LOGQ shared;
+    class TERMINAL,LOGFILE output;
 ```
 
-This diagram summarizes the coursework architecture. The contributor's final
-report will describe any implementation-specific choices.
+This diagram presents the coursework design: four worker threads exchange samples, events and log records through a shared buffer and message queues. It is an architectural overview; implementation-specific behavior and measurements belong in the contributor's source, report and recorded tests.
 
 ### Technical Scope
 
@@ -349,8 +456,11 @@ report, and a demonstration video or link.
 
 ### Currently Available
 
-- [LAB01 Word/PDF reports](lab01/report/)
-- [Assignment 1 PDF report](asgn01/Assignment%201/bao_cao/)
+| Coursework | Reports | Execution / Build Evidence |
+|---|---|---|
+| LAB01 | [Word and PDF](lab01/report/) | [Boot validation](lab01/evidence/boot_validation.log) · [Build logs](lab01/evidence/) |
+| LAB02 | Maintained by the assigned contributor | [Boot, driver, procfs/sysfs and JFFS2 sessions](lab02/evidence/) |
+| Assignment 1 | [PDF report](asgn01/Assignment%201/bao_cao/) | [Test and kernel logs](asgn01/Assignment%201/logs/) |
 
 Reports for LAB02, LAB03, and Assignment 2 will be linked with their uploads.
 
