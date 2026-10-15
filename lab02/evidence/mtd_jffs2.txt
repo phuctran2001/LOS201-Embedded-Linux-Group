@@ -1,0 +1,217 @@
+Script started on 2026-10-15 14:06:38+07:00 [TERM="xterm-256color" TTY="/dev/pts/0" COLUMNS="101" LINES="55"]
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo modprobe -r mtdblock 2>/dev/[27m[7mn[27m[7mull || true[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ sudo modprobe -r mtdblock 2>/dev/null || true
+[?2004l[sudo] password for quocthinh_2303: 
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo modprobe -r nandsim 2>/dev/n[27m[7mu[27m[7mll || true[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ sudo modprobe -r nandsim 2>/dev/null || true
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo modprobe nandsim first_id_by[27m[7mt[27m[7me=0x20 second_id_byte=0x35[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ sudo modprobe nandsim first_id_byte=0x20 second_id_byte=0x35
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo modprobe mtdblock[27msudo modprobe mtdblock
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo modprobe jffs2[27msudo modprobe jffs2
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mcat /proc/mtd[27mcat /proc/mtd
+[?2004ldev:    size   erasesize  name
+mtd0: 02000000 00001000 "BIOS"
+mtd1: 02000000 00004000 "NAND simulator partition 0"
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo mtdinfo /dev/mtd1[27msudo mtdinfo /dev/mtd1'[K
+[?2004lmtd1
+Name:                           NAND simulator partition 0
+Type:                           nand
+Eraseblock size:                16384 bytes, 16.0 KiB
+Amount of eraseblocks:          2048 (33554432 bytes, 32.0 MiB)
+Minimum input/output unit size: 512 bytes
+Sub-page size:                  256 bytes
+OOB size:                       16 bytes
+Character device major/minor:   90:2
+Bad blocks are allowed:         true
+Device is writable:             true
+
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo flash_erase /dev/mtd1 0 0[27msudo flash_erase /dev/mtd1 0 0
+[?2004lErasing 32768 Kibyte @ 0 --  0 % complete Erasing 32768 Kibyte @ 0 -- 100 % complete 
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mrm -rf /tmp/jffs2_data[27mrm -rf /tmp/jffs2_data
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mmkdir -p /tmp/jffs2_data/logs[27mmkdir -p /tmp/jffs2_data/logs
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mecho 'Hello from JFFS2!' > /tmp/j[27m[7mf[27m[7mfs2_data/hello.txt[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ echo 'Hello from JFFS2!' > /tmp/jffs2_data/hello.txt
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mecho 'Embedded Linux Lab2' > /tmp[27m[7m/[27m[7mjffs2_data/info.txt[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ echo 'Embedded Linux Lab2' > /tmp/jffs2_data/info.txt
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mdate > /tmp/jffs2_data/logs/boot.[27m[7ml[27m[7mog[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ date > /tmp/jffs2_data/logs/boot.log
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo mkfs.jffs2 \[27msudo mkfs.jffs2 \
+[?2004l[?2004h> [7m  --root=/tmp/jffs2_data \[27m[C[C  --root=/tmp/jffs2_data \
+[?2004l[?2004h> [7m  --eraseblock=0x4000 \[27m[C[C  --eraseblock=0x4000 \
+[?2004l[?2004h> [7m  --output=/tmp/rootfs.jffs2 \[27m[C[C  --output=/tmp/rootfs.jffs2 \
+[?2004l[?2004h> [7m  --pad \[27m[C[C  --pad \
+[?2004l[?2004h> [7m--no-cleanmarkers[27m[C[C--no-cleanmarkers
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mls -lh /tmp/rootfs.jffs2[27mls -lh /tmp/rootfs.jffs2
+[?2004l-rw-r--r-- 1 root root 16K Thg 10 15 14:09 /tmp/rootfs.jffs2
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo nandwrite -p /dev/mtd1 /tmp/[27m[7mr[27m[7mootfs.jffs2[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ sudo nandwrite -p /dev/mtd1 /tmp/rootfs.jffs2
+[?2004lWriting data to block 0 at offset 0x0
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo mkdir -p /mnt/jffs2[27msudo mkdir -p /mnt/jffs2
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo mount -t jffs2 /dev/mtdblock[27m[7m1[27m[7m /mnt/jffs2[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ sudo mount -t jffs2 /dev/mtdblock1 /mnt/jffs2
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mls -la /mnt/jffs2[27mls -la /mnt/jffs2
+[?2004ltotal 5
+drwxr-xr-x 4 root           root              0 Thg 1   1  1970 [0m[01;34m.[0m
+drwxr-xr-x 3 root           root           4096 Thg 10  8 23:24 [01;34m..[0m
+-rw-rw-r-- 1 quocthinh_2303 quocthinh_2303   18 Thg 10 15 14:08 hello.txt
+-rw-rw-r-- 1 quocthinh_2303 quocthinh_2303   20 Thg 10 15 14:08 info.txt
+drwxrwxr-x 2 quocthinh_2303 quocthinh_2303    0 Thg 10 15 14:08 [01;34mlogs[0m
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mcat /mnt/jffs2/hello.txt[27mcat /mnt/jffs2/hello.txt
+[?2004lHello from JFFS2!
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mcat /mnt/jffs2/info.txt[27mcat /mnt/jffs2/info.txt
+[?2004lEmbedded Linux Lab2
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mcat /mnt/jffs2/logs/boot.log[27mcat /mnt/jffs2/logs/boot.log
+[?2004lThứ năm, 15 Tháng 10 năm 2026 14:08:36 +07
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo sh -c 'echo "Written at $(da[27m[7mt[27m[7me)" >> /mnt/jffs2/logs/boot.log'[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ sudo sh -c 'echo "Written at $(date)" >> /mnt/jffs2/logs/boot.log''[K
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo sh -c 'echo "New runtime fil[27m[7me[27m[7m" > /mnt/jffs2/runtime.txt'[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ sudo sh -c 'echo "New runtime file" > /mnt/jffs2/runtime.txt''[K
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mcat /mnt/jffs2/logs/boot.log[27mcat /mnt/jffs2/logs/boot.log
+[?2004lThứ năm, 15 Tháng 10 năm 2026 14:08:36 +07
+Written at Thứ năm, 15 Tháng 10 năm 2026 14:10:19 +07
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mcat /mnt/jffs2/runtime.txt[27mcat /mnt/jffs2/runtime.txt
+[?2004lNew runtime file
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo umount /mnt/jffs2[27msudo umount /mnt/jffs2
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo mount -t jffs2 /dev/mtdblock[27m[7m1[27m[7m /mnt/jffs2[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ sudo mount -t jffs2 /dev/mtdblock1 /mnt/jffs2
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mcat /mnt/jffs2/logs/boot.log[27mcat /mnt/jffs2/logs/boot.log
+[?2004lThứ năm, 15 Tháng 10 năm 2026 14:08:36 +07
+Written at Thứ năm, 15 Tháng 10 năm 2026 14:10:19 +07
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mcat /mnt/jffs2/runtime.txt[27mcat /mnt/jffs2/runtime.txt
+[?2004lNew runtime file
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo nanddump --oob -l 512 -f /tm[27m[7mp[27m[7m/dump.bin /dev/mtd1[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ sudo nanddump --oob -l 512 -f /tmp/dump.bin /dev/mtd1
+[?2004lECC failed: 0
+ECC corrected: 0
+Number of bad blocks: 0
+Number of bbt blocks: 0
+Block size 16384, page size 512, OOB size 16
+Dumping data starting at 0x00000000 and ending at 0x00000200...
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mls -lh /tmp/dump.bin[27mls -lh /tmp/dump.bin
+[?2004l-rw-r--r-- 1 root root 528 Thg 10 15 14:11 /tmp/dump.bin
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mhexdump -C /tmp/dump.bin | head -[27m[7m2[27m[7m0[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ hexdump -C /tmp/dump.bin | head -20
+[?2004l00000000  85 19 01 e0 31 00 00 00  1d d9 82 42 01 00 00 00  |....1......B....|
+00000010  00 00 00 00 02 00 00 00  e6 7b d0 6a 09 08 00 00  |.........{.j....|
+00000020  1f 60 2b 90 15 da 69 f4  68 65 6c 6c 6f 2e 74 78  |.`+...i.hello.tx|
+00000030  74 ff ff ff 85 19 02 e0  56 00 00 00 09 64 e7 62  |t.......V....d.b|
+00000040  02 00 00 00 01 00 00 00  b4 81 00 00 e8 03 e8 03  |................|
+00000050  12 00 00 00 e6 7b d0 6a  e6 7b d0 6a e6 7b d0 6a  |.....{.j.{.j.{.j|
+00000060  00 00 00 00 12 00 00 00  12 00 00 00 00 00 00 00  |................|
+00000070  ee dd 4b b3 a3 9c 85 cb  48 65 6c 6c 6f 20 66 72  |..K.....Hello fr|
+00000080  6f 6d 20 4a 46 46 53 32  21 0a ff ff 85 19 01 e0  |om JFFS2!.......|
+00000090  30 00 00 00 78 be 3e fa  01 00 00 00 01 00 00 00  |0...x.>.........|
+000000a0  03 00 00 00 ed 7b d0 6a  08 08 00 00 d2 c6 30 40  |.....{.j......0@|
+000000b0  a9 de 79 72 69 6e 66 6f  2e 74 78 74 85 19 02 e0  |..yrinfo.txt....|
+000000c0  58 00 00 00 3a 13 38 82  03 00 00 00 01 00 00 00  |X...:.8.........|
+000000d0  b4 81 00 00 e8 03 e8 03  14 00 00 00 ed 7b d0 6a  |.............{.j|
+000000e0  ed 7b d0 6a ed 7b d0 6a  00 00 00 00 14 00 00 00  |.{.j.{.j........|
+000000f0  14 00 00 00 00 00 00 00  8a 74 43 dd 06 2a 39 21  |.........tC..*9!|
+00000100  45 6d 62 65 64 64 65 64  20 4c 69 6e 75 78 20 4c  |Embedded Linux L|
+00000110  61 62 32 0a 85 19 01 e0  2c 00 00 00 5f 56 f1 e0  |ab2.....,..._V..|
+00000120  01 00 00 00 02 00 00 00  04 00 00 00 f4 7b d0 6a  |.............{.j|
+00000130  04 04 00 00 73 f7 58 3d  40 19 cb d1 6c 6f 67 73  |....s.X=@...logs|
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo umount /mnt/jffs2[27msudo umount /mnt/jffs2
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo modprobe -r mtdblock[27msudo modprobe -r mtdblock
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo modprobe -r nandsim[27msudo modprobe -r nandsim
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mcat /proc/mtd[27mcat /proc/mtd
+[?2004ldev:    size   erasesize  name
+mtd0: 02000000 00001000 "BIOS"
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ exit
+[?2004lexit
+
+Script done on 2026-10-15 14:12:09+07:00 [COMMAND_EXIT_CODE="0"]
+Script started on 2026-10-15 14:14:10+07:00 [TERM="xterm-256color" TTY="/dev/pts/0" COLUMNS="101" LINES="55"]
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo modprobe nandsim first_id_by[27m[7mt[27m[7me=0x20 second_id_byte=0x35[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ sudo modprobe nandsim first_id_byte=0x20 second_id_byte=0x35
+[?2004l[sudo] password for quocthinh_2303: 
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo modprobe mtdblock[27msudo modprobe mtdblock
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo modprobe jffs2[27msudo modprobe jffs2
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mcat /proc/mtd[27mcat /proc/mtd
+[?2004ldev:    size   erasesize  name
+mtd0: 02000000 00001000 "BIOS"
+mtd1: 02000000 00004000 "NAND simulator partition 0"
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo flash_erase /dev/mtd1 0 0[27msudo flash_erase /dev/mtd1 0 0
+[?2004lErasing 32768 Kibyte @ 0 --  0 % complete Erasing 32768 Kibyte @ 0 -- 100 % complete 
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo nandwrite -p /dev/mtd1 /tmp/[27m[7mr[27m[7mootfs.jffs2[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ sudo nandwrite -p /dev/mtd1 /tmp/rootfs.jffs2
+[?2004lWriting data to block 0 at offset 0x0
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo mkdir -p /mnt/jffs2[27msudo mkdir -p /mnt/jffs2
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo mount -t jffs2 /dev/mtdblock[27m[7m1[27m[7m /mnt/jffs2[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ sudo mount -t jffs2 /dev/mtdblock1 /mnt/jffs2
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo sh -c 'echo "Written at $(da[27m[7mt[27m[7me)" >> /mnt/jffs2/logs/boot.log'[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ sudo sh -c 'echo "Written at $(date)" >> /mnt/jffs2/logs/boot.log'
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo sh -c 'echo "New runtime fil[27m[7me[27m[7m" > /mnt/jffs2/runtime.txt'[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ sudo sh -c 'echo "New runtime file" > /mnt/jffs2/runtime.txt'
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mcat /mnt/jffs2/logs/boot.log[27mcat /mnt/jffs2/logs/boot.log
+[?2004lThứ năm, 15 Tháng 10 năm 2026 14:08:36 +07
+Written at Thứ năm, 15 Tháng 10 năm 2026 14:15:15 +07
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mcat /mnt/jffs2/runtime.txt[27mcat /mnt/jffs2/runtime.txt
+[?2004lNew runtime file
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo umount /mnt/jffs2[27msudo umount /mnt/jffs2
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo mount -t jffs2 /dev/mtdblock[27m[7m1[27m[7m /mnt/jffs2[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ sudo mount -t jffs2 /dev/mtdblock1 /mnt/jffs2
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mecho "===== PERSISTENCE CHECK AFT[27m[7mE[27m[7mR REMOUNT ====="[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ echo "===== PERSISTENCE CHECK AFTER REMOUNT ====="
+[?2004l===== PERSISTENCE CHECK AFTER REMOUNT =====
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mcat /mnt/jffs2/logs/boot.log[27mcat /mnt/jffs2/logs/boot.log
+[?2004lThứ năm, 15 Tháng 10 năm 2026 14:08:36 +07
+Written at Thứ năm, 15 Tháng 10 năm 2026 14:15:15 +07
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mcat /mnt/jffs2/runtime.txt[27mcat /mnt/jffs2/runtime.txt
+[?2004lNew runtime file
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo umount /mnt/jffs2[27msudo umount /mnt/jffs2
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo modprobe -r mtdblock[27msudo modprobe -r mtdblock
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo modprobe -r nandsim[27msudo modprobe -r nandsim
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo modprobe -r nandsim[27m[1Psudo modprobe -r nandsi[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[Kexit
+[?2004lexit
+
+Script done on 2026-10-15 14:16:29+07:00 [COMMAND_EXIT_CODE="0"]
+Script started on 2026-10-15 14:18:50+07:00 [TERM="xterm-256color" TTY="/dev/pts/0" COLUMNS="101" LINES="55"]
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo modprobe nandsim first_id_by[27m[7mt[27m[7me=0x20 second_id_byte=0x35[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ sudo modprobe nandsim first_id_byte=0x20 second_id_byte=0x35
+[?2004l[sudo] password for quocthinh_2303: 
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo modprobe mtdblock[27msudo modprobe mtdblock
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo modprobe jffs2[27msudo modprobe jffs2
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mcat /proc/mtd[27mcat /proc/mtd
+[?2004ldev:    size   erasesize  name
+mtd0: 02000000 00001000 "BIOS"
+mtd1: 02000000 00004000 "NAND simulator partition 0"
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo flash_erase /dev/mtd1 0 0[27msudo flash_erase /dev/mtd1 0 0
+[?2004lErasing 32768 Kibyte @ 0 --  0 % complete Erasing 32768 Kibyte @ 0 -- 100 % complete 
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo nandwrite -p /dev/mtd1 /tmp/[27m[7mr[27m[7mootfs.jffs2[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ sudo nandwrite -p /dev/mtd1 /tmp/rootfs.jffs2
+[?2004lWriting data to block 0 at offset 0x0
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo mkdir -p /mnt/jffs2[27msudo mkdir -p /mnt/jffs2
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo mount -t jffs2 /dev/mtdblock[27m[7m1[27m[7m /mnt/jffs2[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ sudo mount -t jffs2 /dev/mtdblock1 /mnt/jffs2
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mmount | grep jffs2[27mmount | grep jffs2
+[?2004l/dev/mtdblock1 on /mnt/[01;31m[Kjffs2[m[K type [01;31m[Kjffs2[m[K (rw,relatime)
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo sh -c 'echo "New runtime fil[27m[7me[27m[7m" > /mnt/jffs2/runtime.txt'[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ sudo sh -c 'echo "New runtime file" > /mnt/jffs2/runtime.txt'
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mcat /mnt/jffs2/runtime.txt[27mcat /mnt/jffs2/runtime.txt
+[?2004lNew runtime file
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo umount /mnt/jffs2[27msudo umount /mnt/jffs2
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo mount -t jffs2 /dev/mtdblock[27m[7m1[27m[7m /mnt/jffs2[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ sudo mount -t jffs2 /dev/mtdblock1 /mnt/jffs2
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mecho "===== PERSISTENCE CHECK AFT[27m[7mE[27m[7mR REMOUNT ====="[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ echo "===== PERSISTENCE CHECK AFTER REMOUNT ====="
+[?2004l===== PERSISTENCE CHECK AFTER REMOUNT =====
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mcat /mnt/jffs2/runtime.txt[27mcat /mnt/jffs2/runtime.txt
+[?2004lNew runtime file
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo umount /mnt/jffs2[27msudo umount /mnt/jffs2
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo modprobe -r mtdblock[27msudo modprobe -r mtdblock
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo modprobe -r nandsim[27msudo modprobe -r nandsim
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ exit
+[?2004lexit
+
+Script done on 2026-10-15 14:20:58+07:00 [COMMAND_EXIT_CODE="0"]
+Script started on 2026-10-15 14:24:54+07:00 [TERM="xterm-256color" TTY="/dev/pts/0" COLUMNS="101" LINES="55"]
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo modprobe nandsim first_id_by[27m[7mt[27m[7me=0x20 second_id_byte=0x35[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ sudo modprobe nandsim first_id_byte=0x20 second_id_byte=0x35
+[?2004l[sudo] password for quocthinh_2303: 
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo modprobe mtdblock[27msudo modprobe mtdblock
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ V
+[?2004lV: command not found
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo modprobe jffs2[27msudo modprobe jffs2
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mcat /proc/mtd[27mcat /proc/mtd
+[?2004ldev:    size   erasesize  name
+mtd0: 02000000 00001000 "BIOS"
+mtd1: 02000000 00004000 "NAND simulator partition 0"
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ ^[[200~sudo flash_erase /dev/mtd1 0 0~[K[K[K[K[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[K
+[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[7msudo flash_erase /dev/mtd1 0 0[27msudo flash_erase /dev/mtd1 0 0
+[?2004lErasing 32768 Kibyte @ 0 --  0 % complete Erasing 32768 Kibyte @ 0 -- 100 % complete 
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo nandwrite -p /dev/mtd1 /tmp/[27m[7mr[27m[7mootfs.jffs2[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ sudo nandwrite -p /dev/mtd1 /tmp/rootfs.jffs2
+[?2004lWriting data to block 0 at offset 0x0
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo mkdir -p /mnt/jffs2[27msudo mkdir -p /mnt/jffs2
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo mount -t jffs2 /dev/mtdblock[27m[7m1[27m[7m /mnt/jffs2[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ sudo mount -t jffs2 /dev/mtdblock1 /mnt/jffs2
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mmount | grep jffs2[27mmount | grep jffs2
+[?2004l/dev/mtdblock1 on /mnt/[01;31m[Kjffs2[m[K type [01;31m[Kjffs2[m[K (rw,relatime)
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo sh -c 'echo "New runtime fil[27m[7me[27m[7m" > /mnt/jffs2/runtime.txt'[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ sudo sh -c 'echo "New runtime file" > /mnt/jffs2/runtime.txt'
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mcat /mnt/jffs2/runtime.txt[27mcat /mnt/jffs2/runtime.txt
+[?2004lNew runtime file
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo umount /mnt/jffs2[27msudo umount /mnt/jffs2
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo mount -t jffs2 /dev/mtdblock[27m[7m1[27m[7m /mnt/jffs2[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ sudo mount -t jffs2 /dev/mtdblock1 /mnt/jffs2
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mecho "===== PERSISTENCE CHECK AFT[27m[7mE[27m[7mR REMOUNT ====="[27m[A]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ echo "===== PERSISTENCE CHECK AFTER REMOUNT ====="
+[?2004l===== PERSISTENCE CHECK AFTER REMOUNT =====
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7mcat /mnt/jffs2/runtime.txt[27mcat /mnt/jffs2/runtime.txt
+[?2004lNew runtime file
+[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo umount /mnt/jffs2[27msudo umount /mnt/jffs2
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo modprobe -r mtdblock[27msudo modprobe -r mtdblock
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ [7msudo modprobe -r nandsim[27msudo modprobe -r nandsim'[K
+[?2004l[?2004h]0;quocthinh_2303@Prestige-14-AI-Studio: ~/LOS201-Embedded-Linux-Group[01;32mquocthinh_2303@Prestige-14-AI-Studio[00m:[01;34m~/LOS201-Embedded-Linux-Group[00m$ exit
+[?2004lexit
+
+Script done on 2026-10-15 14:27:17+07:00 [COMMAND_EXIT_CODE="0"]
