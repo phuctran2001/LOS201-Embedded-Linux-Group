@@ -1,24 +1,27 @@
 # LOS201 – Embedded Linux Systems
 
-Group coursework repository for **LOS201 – Embedded Linux Systems** at
-**FPT University**.
+**FPT University · Group Coursework Portfolio**
 
-This repository brings together our practical work on ARM Linux system
-construction, device drivers, flash filesystems, application debugging,
-performance analysis, and a sensor monitoring application.
+This repository presents our completed coursework for **LOS201 – Embedded
+Linux Systems**, comprising **three laboratory exercises and two assignments**.
+The work covers building an ARM Linux environment, developing kernel device
+drivers, working with flash filesystems, debugging and profiling applications,
+and designing a multithreaded Sensor Monitoring System.
 
-The coursework is organized so that the lecturer and other readers can find
-each contributor's source code, configuration files, technical reports, and
-supporting evidence.
+This README provides a shared introduction, contributor information, technical
+overviews, and navigation to the coursework materials. Individual guides provide
+the build commands, implementation details, recorded tests, and explanations
+needed to review and reproduce the documented experiments.
 
-**Start here:** [LAB01 Quick Start](lab01/README.md#quick-start) · [LAB02 guide](lab02/README.md) · [Assignment 1 guide](asgn01/Assignment%201/README.md)
+**Explore:** [Coursework Overview](#coursework-overview) · [LAB01 Quick Start](lab01/README.md#quick-start) · [LAB02 Guide](lab02/README.md) · [Assignment 1 Guide](Assignment%201/README.md) · [Reports and Evidence](#reports-and-evidence)
 
 ## Contents
 
 - [Team Members](#team-members)
-- [Technical Platform](#technical-platform)
 - [Coursework Overview](#coursework-overview)
+- [Technical Platform](#technical-platform)
 - [Repository Organization](#repository-organization)
+- [Getting Started](#getting-started)
 - [LAB01 – ARM Linux System Build and Boot](#lab01--arm-linux-system-build-and-boot)
 - [LAB02 – Device Driver and Filesystem Management](#lab02--device-driver-and-filesystem-management)
 - [LAB03 – Debugging and Performance Analysis](#lab03--debugging-and-performance-analysis)
@@ -26,6 +29,7 @@ supporting evidence.
 - [Assignment 2 – Sensor Monitoring System](#assignment-2--sensor-monitoring-system)
 - [Reports and Evidence](#reports-and-evidence)
 - [Team Collaboration](#team-collaboration)
+- [References](#references)
 
 ## Team Members
 
@@ -36,16 +40,27 @@ supporting evidence.
 | Đinh Quang Ngọc | SE201573 | LAB03 |
 | Võ Quốc Thịnh | SE200595 | LAB02 |
 
-**Repository owner:** Trần Thiên Phúc.
+**Repository owner and shared documentation maintainer:** Trần Thiên Phúc.
 
-GitHub accounts will be added when available.
-The contributor responsible for each submission is identified in its own
-documentation and commit history.
+Each member is responsible for implementing, testing, documenting, and
+submitting their assigned coursework. Contributor information, commits, and
+pull requests record the team's individual contributions.
+
+## Coursework Overview
+
+The five completed coursework items develop complementary skills across the
+embedded Linux software stack, from the boot environment to kernel interfaces
+and concurrent userspace applications.
+
+| Coursework | Main Topic | Contributor |
+|---|---|---|
+| [LAB01](lab01/README.md) | ARM kernel, U-Boot, BusyBox, root filesystem, and QEMU boot | Trần Thiên Phúc |
+| [LAB02](lab02/README.md) | Character device driver, procfs/sysfs, MTD/JFFS2, and boot integration | Võ Quốc Thịnh |
+| [LAB03](#lab03--debugging-and-performance-analysis) | Debugging, memory analysis, profiling, and scheduling latency | Đinh Quang Ngọc |
+| [Assignment 1](Assignment%201/README.md) | IOCTL character driver and miscellaneous counter device | Nguyễn Huy Hoàng |
+| [Assignment 2](#assignment-2--sensor-monitoring-system) | Multithreaded Sensor Monitoring System, driver integration, and analysis | Trần Thiên Phúc |
 
 ## Technical Platform
-
-The ARM system used for LAB01 and LAB02 provides the foundation for the
-later coursework.
 
 | Component | Platform / Version |
 |---|---|
@@ -57,51 +72,54 @@ later coursework.
 | Bootloader | U-Boot 2022.04 |
 | Minimal userspace | BusyBox 1.35.0 |
 | Cross-compilation prefix | `arm-linux-gnueabihf-` |
-| Source languages | C and shell scripts |
-| Build system | GNU Make / kernel module Makefiles |
-| Debugging and analysis tools | GDB, gdbserver, Valgrind, strace, perf, and cyclictest |
+| Implementation languages | C and shell scripts |
+| Build tools | GNU Make and the Linux kernel module build system |
+| Debugging tools | GDB, gdbserver, and Valgrind |
+| Profiling and latency tools | strace, perf, and cyclictest |
 
-Host and ARM target programs use different binaries. Kernel modules must
-match the architecture and kernel build of the system where they are loaded.
-Exact commands and environment details belong in the documentation for each
-coursework item.
+LAB01 establishes the ARM environment used as the foundation for the driver
+experiments. Some analysis exercises run on the Ubuntu host; others run on the
+ARM target. The individual guides identify the relevant environment and commands.
 
-## Coursework Overview
-
-The coursework consists of three laboratory exercises and two assignments covering ARM Linux system development, device drivers, flash filesystems, debugging, performance analysis, and a sensor monitoring application. The table below summarizes each coursework item and identifies the team member responsible for its implementation and documentation.
-
-| Coursework | Main Topic | Contributor |
-|---|---|---|
-| [LAB01](lab01/README.md) | ARM Linux system build and boot | Trần Thiên Phúc |
-| [LAB02](lab02/README.md) | Device driver, procfs/sysfs, and JFFS2 | Võ Quốc Thịnh |
-| [LAB03](#lab03--debugging-and-performance-analysis) | Debugging, memory analysis, profiling, and latency | Đinh Quang Ngọc |
-| [Assignment 1](asgn01/Assignment%201/README.md) | IOCTL and miscellaneous device drivers | Nguyễn Huy Hoàng |
-| [Assignment 2](#assignment-2--sensor-monitoring-system) | Sensor Monitoring System | Trần Thiên Phúc |
-
-The following sections present the objectives, technical scope, and architecture of each coursework item. Source code, configuration files, testing evidence, and technical reports provide the basis for reviewing the work and understanding each member’s contribution.
+Host executables and ARM executables are different build outputs. A kernel
+module must match the target architecture and the running kernel's version and
+configuration. The U-Boot console experiment and the direct Linux boot
+experiment are documented as separate execution paths.
 
 ## Repository Organization
 
-| Directory / File | Contents |
+| Location | Contents |
 |---|---|
-| [lab01/README.md](lab01/README.md) | LAB01 build guide, Quick Start, verification and troubleshooting |
-| [lab01/configs/](lab01/configs/) | Linux, U-Boot and BusyBox configurations |
-| [lab01/rootfs/](lab01/rootfs/) | Selected root filesystem startup files |
-| [lab01/output/](lab01/output/) | Tested ARM kernel image, board DTB and initramfs |
-| [lab01/evidence/](lab01/evidence/) | Kernel build, troubleshooting, boot and runtime validation logs |
+| [README.md](README.md) | Shared introduction, team responsibilities, coursework architecture, and navigation |
+| [.gitignore](.gitignore) | Rules for excluding local build and temporary files from new commits |
+| [lab01/README.md](lab01/README.md) | Build instructions, Quick Start, verification, and troubleshooting |
+| [lab01/configs/](lab01/configs/) | Linux, U-Boot, and BusyBox configurations |
+| [lab01/rootfs/](lab01/rootfs/) | Selected initialization and root filesystem files |
+| [lab01/output/](lab01/output/) | Tested ARM kernel image, board device tree, and initramfs |
+| [lab01/evidence/](lab01/evidence/) | Build, troubleshooting, boot, and runtime validation logs |
 | [lab01/report/](lab01/report/) | LAB01 Word and PDF reports |
-| [lab02/README.md](lab02/README.md) | LAB02 setup, driver build, QEMU boot, tests, and recorded results |
-| [lab02/driver_architecture.png](lab02/driver_architecture.png) | Driver architecture and user/kernel interface diagram |
-| [lab02/driver/](lab02/driver/) | Character device driver source and compiled module |
-| [lab02/rootfs/](lab02/rootfs/) | Boot integration files and device/procfs test scripts |
-| [lab02/evidence/](lab02/evidence/) | Original boot, driver, procfs/sysfs and MTD/JFFS2 logs |
-| [lab02/evidence/clean/](lab02/evidence/clean/) | Readable excerpts of the original LAB02 execution logs |
+| [lab02/README.md](lab02/README.md) | Driver setup, build, execution, testing, and recorded results |
+| [lab02/driver_architecture.png](lab02/driver_architecture.png) | LAB02 architecture and driver interface diagram |
+| [lab02/driver/](lab02/driver/) | Character device driver source, Makefile, and compiled module |
+| [lab02/rootfs/](lab02/rootfs/) | Boot integration files and test scripts |
+| [lab02/evidence/](lab02/evidence/) | Original execution logs and readable excerpts in `clean/` |
 | [lab02/report/](lab02/report/) | LAB02 PDF report |
-| [asgn01/Assignment 1/](asgn01/Assignment%201/) | Assignment 1 guide, driver sources, modules, tests, logs and report |
+| [Assignment 1/](Assignment%201/) | Assignment guide, IOCTL and counter drivers, tests, logs, and PDF report |
 
-The table links to coursework materials. LAB03 and Assignment 2 are introduced below through their coursework objectives and assigned contributors.
+The sections below explain the technical scope of all five coursework items.
+Upstream Linux, U-Boot, and BusyBox source trees can be obtained using the
+versions and instructions in the individual build guides.
 
-Upstream source trees can be obtained using the versions and download instructions in the individual guides. Build and execution details belong with each coursework submission.
+## Getting Started
+
+1. Use the [coursework table](#coursework-overview) to find a topic and its contributor.
+2. For a working ARM Linux environment, follow the [LAB01 Quick Start](lab01/README.md#quick-start). It uses the supplied kernel image, device tree, and initramfs.
+3. For driver and filesystem experiments, follow the [LAB02 guide](lab02/README.md) or [Assignment 1 guide](Assignment%201/README.md), including their kernel and module requirements.
+4. Review the source alongside the [reports and execution evidence](#reports-and-evidence) to connect the implementation with its recorded behavior.
+
+The LAB01 boot files demonstrate the LAB01 environment. LAB02 boot integration
+and additional drivers require the preparation described in their own guides;
+they are not automatically included in the LAB01 initramfs.
 
 ## LAB01 – ARM Linux System Build and Boot
 
@@ -250,41 +268,44 @@ present selected outputs for easier review and are not separate test runs.
 
 ## LAB03 – Debugging and Performance Analysis
 
-**Completion:** reported completed by the team.
-
-**Repository upload:** pending.
-
 **Contributor:** Đinh Quang Ngọc.
 
 ### Overview
 
-LAB03 covers debugging and performance analysis for embedded Linux
-applications. Its four practical parts address application faults, memory
-management, system-call/CPU profiling, and scheduling latency.
+LAB03 addresses the diagnosis and analysis of Linux applications through four
+complementary areas: runtime faults, memory management, system-call and CPU
+profiling, and scheduling latency.
 
 ### Technical Scope
 
-| Part | Tools | Focus |
+| Part | Tools | Work Covered |
 |---|---|---|
 | A – Remote debugging | GDB multiarch and gdbserver | Breakpoints, watchpoints, call stacks, variable inspection, and analysis of faulty C code |
-| B – Memory analysis | Valgrind Memcheck | Identify allocation leaks, correct memory ownership, and compare results before and after fixes |
-| C – Application profiling | strace and perf | Analyze system calls, CPU hotspots, and possible optimizations |
-| D – Real-time analysis | cyclictest and histogram plots | Measure scheduling latency and explain the effect of kernel preemption |
+| B – Memory analysis | Valgrind Memcheck | Allocation leaks, memory ownership, corrective changes, and comparison of diagnostic output |
+| C – Application profiling | strace and perf | System-call behavior, CPU hotspots, and optimization analysis |
+| D – Real-time analysis | cyclictest and histogram plots | Scheduling latency, measurement distributions, and kernel preemption concepts |
 
-The lab distinguishes target debugging from host analysis. In the supplied
-workflow, Valgrind analysis and cyclictest measurements run on the Ubuntu
-host. QEMU timing should not be presented as a physical hardware real-time
-benchmark.
+### Analysis and Interpretation
 
-The required standard-kernel measurements are accompanied by an explanation
-of PREEMPT_RT. An actual RT-kernel comparison is an additional experiment
-and should be identified separately if performed.
+Debugging explains where an application fails and why. Memory analysis examines
+allocation and cleanup behavior, while profiling identifies expensive execution
+paths. Latency measurements provide a separate view of scheduling behavior.
 
-### Submission Materials
+The distinction between host analysis and ARM target execution matters when
+interpreting results. Valgrind and cyclictest measurements must identify the
+system on which they were collected. Emulated timing and physical-board timing
+describe different environments.
 
-The contributor's upload will provide the application sources, corrected
-versions, debugging sessions, profiling logs, latency data/plots, and report.
-Measured values and demonstrated outcomes will be documented with those files.
+PREEMPT_RT forms part of the real-time discussion. A measured comparison between
+standard and RT kernels requires separate results for both configurations.
+
+### Review Focus
+
+Read faulty and corrected code together with debugger sessions, memory-analysis
+output, profiling traces, and latency plots. A useful comparison identifies the
+problem, explains the change, and relates the recorded output to the resulting
+behavior. Exact numerical findings belong with their measurement environment
+and test procedure.
 
 ## Assignment 1 – How to Write a Device Driver
 
@@ -327,20 +348,15 @@ kernel concepts. Test output and kernel logs support the implementation review.
 
 ### Available Materials
 
-- [Assignment documentation](asgn01/Assignment%201/README.md)
-- [IOCTL driver and tests](asgn01/Assignment%201/task1_ioctl/)
-- [Counter driver and tests](asgn01/Assignment%201/task2_misc/)
-- [Test and kernel logs](asgn01/Assignment%201/logs/)
-- [Assignment report](asgn01/Assignment%201/bao_cao/)
+- [Assignment documentation](Assignment%201/README.md)
+- [IOCTL driver and tests](Assignment%201/task1_ioctl/)
+- [Counter driver and tests](Assignment%201/task2_misc/)
+- [Test and kernel logs](Assignment%201/logs/)
+- [Assignment report](Assignment%201/bao_cao/)
 
-These materials were contributed by Hoang through his own GitHub account.
-They remain associated with his original commits and pull requests.
+Hoàng's commits and pull requests preserve the authorship of this submission.
 
 ## Assignment 2 – Sensor Monitoring System
-
-**Completion:** reported completed by the team.
-
-**Repository upload:** pending.
 
 **Contributor:** Trần Thiên Phúc.
 
@@ -411,70 +427,71 @@ This diagram presents the coursework design: four worker threads exchange sample
 | 4 – Real-time analysis | Sampling interval, scheduling policy, latency/jitter measurements, and optimization discussion |
 | 5 – Report and demonstration | Architecture explanation, test evidence, technical report, and demonstration video |
 
-The design uses a simulated temperature/humidity device exposed through
-`/dev/sms_sensor`, with diagnostics through `/proc/sms_stats`. Sensor samples
-pass through a synchronized buffer before processing, alerting, and logging.
+### Data Flow and Review Focus
 
-No benchmark values are included here before the contributor's evidence is
-uploaded. Timing results, memory measurements, and test outcomes belong with
-their recorded environment and reproducible procedure.
+The architecture uses a simulated sensor interface to acquire samples. A sensor
+thread places data in a synchronized circular buffer; a processor thread
+evaluates the samples and produces events; an alert thread handles threshold
+notifications; and a logger thread writes records to persistent storage.
 
-### Submission Materials
+The shared buffer and message queues connect these stages. The implementation
+review covers synchronization, memory ownership, queue handling, configuration,
+and orderly shutdown, together with the kernel/userspace interface.
 
-The contributor's upload will provide driver and application sources,
-Makefiles, test/profiling logs, architecture documentation, the technical
-report, and a demonstration video or link.
+Debugging, memory checks, profiling, and sampling-latency analysis complement
+the functional tests. Reported measurements should identify the workload,
+scheduling configuration, execution environment, and method used to obtain them.
+The diagram summarizes the coursework architecture rather than benchmark results.
 
 ## Reports and Evidence
 
-### Currently Available
+The following links provide direct access to published reports and execution
+records. The individual guides explain the commands and context behind them.
 
-| Coursework | Reports | Execution / Build Evidence |
+| Coursework | Technical Report | Supporting Evidence |
 |---|---|---|
-| LAB01 | [Word and PDF](lab01/report/) | [Boot validation](lab01/evidence/boot_validation.log) · [Build logs](lab01/evidence/) |
-| LAB02 | [PDF report](lab02/report/SE200595_Lab02_BaoCao.pdf) | [Original logs](lab02/evidence/) · [Clean excerpts](lab02/evidence/clean/) |
-| Assignment 1 | [PDF report](asgn01/Assignment%201/bao_cao/) | [Test and kernel logs](asgn01/Assignment%201/logs/) |
+| LAB01 | [PDF](lab01/report/BAO_CAO_LAB01_Embedded_Linux.pdf) · [Word](lab01/report/BAO_CAO_LAB01_Embedded_Linux.docx) | [Boot validation](lab01/evidence/boot_validation.log) · [Build and troubleshooting logs](lab01/evidence/) |
+| LAB02 | [PDF](lab02/report/SE200595_Lab02_BaoCao.pdf) | [Original execution logs](lab02/evidence/) · [Readable excerpts](lab02/evidence/clean/) |
+| Assignment 1 | [PDF](Assignment%201/bao_cao/SE203347_NguyenHuyHoang_Asgn01_BaoCao.pdf) | [Driver tests and kernel logs](Assignment%201/logs/) |
 
-Reports for LAB03 and Assignment 2 will be linked with their uploads.
+### Recorded Checks
 
-### Documentation Conventions
+- **LAB01:** the runtime validation log records Linux 5.15.0 on ARMv7, the `embedded-lab` hostname, CPU information, mounted virtual filesystems, initialization, and device nodes.
+- **LAB02:** the sessions record module loading, character-device operations, procfs/sysfs inspection, and MTD/JFFS2 operations including persistence across an unmount/remount cycle.
+- **Assignment 1:** test transcripts and kernel logs accompany the IOCTL driver and miscellaneous counter device implementations.
 
-Each coursework submission should identify its contributor and explain:
+LAB02's clean logs are selected excerpts of the original transcripts, not
+additional independent test runs. Build logs, runtime output, screenshots, and
+measured performance data each document different aspects of the work.
 
-1. The objective and relevant environment.
-2. The source, configuration, and build/run procedure.
-3. The test commands and what their output means.
-4. The actual logs, screenshots, diagrams, or measurements.
-5. Encountered problems, fixes, and remaining limitations.
+### Reading the Documentation
 
-Compilation logs, runtime logs, and expected example output serve different
-purposes and should be labelled accordingly. Screenshots and measurements
-must correspond to the contributor's own execution.
+For each experiment, review the objective, environment, implementation,
+build/run procedure, recorded output, and explanation of the results together.
+Troubleshooting notes connect encountered problems with their fixes.
+Performance figures are meaningful in the context of the system and workload
+used to collect them; exact measurements belong in the corresponding report.
 
 ## Team Collaboration
 
-Each member develops and uploads their assigned work using their own GitHub
-account. The repository owner maintains shared navigation and introductory
-documentation.
+Each member contributes their assigned coursework through their own GitHub
+account. The repository owner maintains the shared README and navigation.
 
-- Use a personal or task-specific branch for changes.
-- Commit meaningful units of work as development progresses.
-- Push updates regularly so the lecturer can follow individual work.
-- Submit a pull request describing the change and relevant checks.
-- Merge reviewed contributions into `main`.
-- Keep the original contributor identified in coursework documentation.
+The collaboration workflow uses personal or task-specific branches, meaningful
+commits, regular pushes during development, and pull requests for review before
+merging into `main`. Coursework documentation identifies the responsible member,
+while commit history and pull requests preserve contribution records.
 
-Commit history and pull requests document individual contributions. Practical
-completion and the availability of files in this repository are recorded
-separately; pending uploads remain the responsibility of their contributors.
+Future corrections follow the same workflow: describe the change, check the
+affected commands or links, and retain the original contributor's authorship.
 
 ## References
 
-- Course lab and assignment specifications supplied by the lecturer.
+- LOS201 laboratory and assignment specifications supplied by the lecturer.
 - [Linux kernel documentation](https://docs.kernel.org/)
 - [U-Boot documentation](https://docs.u-boot.org/)
 - [BusyBox](https://busybox.net/)
 - [QEMU documentation](https://www.qemu.org/docs/master/)
 
-Implementation-specific references belong in the corresponding technical
-report.
+Implementation-specific references and technical discussions are included in
+the corresponding coursework documentation and reports.
