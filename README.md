@@ -11,7 +11,7 @@ The coursework is organized so that the lecturer and other readers can find
 each contributor's source code, configuration files, technical reports, and
 supporting evidence.
 
-**Start here:** [LAB01 Quick Start](lab01/README.md#quick-start) · [LAB02 materials](lab02/) · [Assignment 1 guide](asgn01/Assignment%201/README.md)
+**Start here:** [LAB01 Quick Start](lab01/README.md#quick-start) · [LAB02 guide](lab02/README.md) · [Assignment 1 guide](asgn01/Assignment%201/README.md)
 
 ## Contents
 
@@ -73,7 +73,7 @@ The coursework consists of three laboratory exercises and two assignments coveri
 | Coursework | Main Topic | Contributor |
 |---|---|---|
 | [LAB01](lab01/README.md) | ARM Linux system build and boot | Trần Thiên Phúc |
-| [LAB02](lab02/) | Device driver, procfs/sysfs, and JFFS2 | Võ Quốc Thịnh |
+| [LAB02](lab02/README.md) | Device driver, procfs/sysfs, and JFFS2 | Võ Quốc Thịnh |
 | [LAB03](#lab03--debugging-and-performance-analysis) | Debugging, memory analysis, profiling, and latency | Đinh Quang Ngọc |
 | [Assignment 1](asgn01/Assignment%201/README.md) | IOCTL and miscellaneous device drivers | Nguyễn Huy Hoàng |
 | [Assignment 2](#assignment-2--sensor-monitoring-system) | Sensor Monitoring System | Trần Thiên Phúc |
@@ -90,12 +90,16 @@ The following sections present the objectives, technical scope, and architecture
 | [lab01/output/](lab01/output/) | Tested ARM kernel image, board DTB and initramfs |
 | [lab01/evidence/](lab01/evidence/) | Kernel build, troubleshooting, boot and runtime validation logs |
 | [lab01/report/](lab01/report/) | LAB01 Word and PDF reports |
-| [lab02/driver/](lab02/driver/) | Character device driver source and kernel module Makefile |
+| [lab02/README.md](lab02/README.md) | LAB02 setup, driver build, QEMU boot, tests, and recorded results |
+| [lab02/driver_architecture.png](lab02/driver_architecture.png) | Driver architecture and user/kernel interface diagram |
+| [lab02/driver/](lab02/driver/) | Character device driver source and compiled module |
 | [lab02/rootfs/](lab02/rootfs/) | Boot integration files and device/procfs test scripts |
-| [lab02/evidence/](lab02/evidence/) | Boot, driver, diagnostic interface and MTD/JFFS2 logs |
+| [lab02/evidence/](lab02/evidence/) | Original boot, driver, procfs/sysfs and MTD/JFFS2 logs |
+| [lab02/evidence/clean/](lab02/evidence/clean/) | Readable excerpts of the original LAB02 execution logs |
+| [lab02/report/](lab02/report/) | LAB02 PDF report |
 | [asgn01/Assignment 1/](asgn01/Assignment%201/) | Assignment 1 guide, driver sources, modules, tests, logs and report |
 
-The table links to materials currently present in the repository. LAB03 and Assignment 2 are introduced below through their coursework objectives and assigned contributors.
+The table links to coursework materials. LAB03 and Assignment 2 are introduced below through their coursework objectives and assigned contributors.
 
 Upstream source trees can be obtained using the versions and download instructions in the individual guides. Build and execution details belong with each coursework submission.
 
@@ -195,7 +199,8 @@ The runtime log records Linux 5.15.0 on ARMv7, hostname `embedded-lab`, two onli
 
 LAB02 extends the LAB01 system with a loadable character device driver,
 diagnostic interfaces, MTD/JFFS2 experiments, and automatic module loading
-during userspace startup.
+during userspace startup. For build instructions, test commands, and recorded
+results, see the [LAB02 guide](lab02/README.md).
 
 ### Technical Scope
 
@@ -210,48 +215,11 @@ The uploaded driver exposes `/dev/lab2` with major number `240` and minor number
 
 ### Driver Interfaces
 
-```mermaid
-flowchart TB
-    subgraph USER["Userspace"]
-        TEST["Shell commands and test scripts"]
-    end
+The following diagram illustrates the LAB02 character device driver, its procfs/sysfs interfaces, and shared kernel state. The same figure is included in the [LAB02 guide](lab02/README.md#driver-architecture-and-interfaces).
 
-    subgraph INTERFACES["Kernel interfaces"]
-        DEV["/dev/lab2"]
-        PROC["/proc/lab2_info"]
-        SYS["sysfs device attributes"]
-    end
+![LAB02 Character Device Driver Architecture and Interfaces](lab02/driver_architecture.png)
 
-    subgraph DRIVER["Kernel module"]
-        OPS["open / read / write / release"]
-        PROCSHOW["procfs statistics callback"]
-        SYSSHOW["sysfs attribute callbacks"]
-        STATE["1024-byte buffer, data length and open count"]
-    end
-
-    TEST -->|"device operations"| DEV
-    TEST -->|"read statistics"| PROC
-    TEST -->|"read attributes"| SYS
-    DEV --> OPS
-    PROC --> PROCSHOW
-    SYS --> SYSSHOW
-    OPS <-->|"data and state"| STATE
-    PROCSHOW -->|"inspect"| STATE
-    SYSSHOW -->|"inspect"| STATE
-
-    style USER fill:#f8fafc,stroke:#94a3b8,color:#0f172a
-    style INTERFACES fill:#f8fafc,stroke:#94a3b8,color:#0f172a
-    style DRIVER fill:#f8fafc,stroke:#94a3b8,color:#0f172a
-
-    classDef app fill:#dbeafe,stroke:#2563eb,color:#172554,stroke-width:2px;
-    classDef interface fill:#ede9fe,stroke:#7c3aed,color:#2e1065,stroke-width:2px;
-    classDef callback fill:#dcfce7,stroke:#16a34a,color:#14532d,stroke-width:2px;
-    classDef storage fill:#ffedd5,stroke:#ea580c,color:#431407,stroke-width:2px;
-    class TEST app;
-    class DEV,PROC,SYS interface;
-    class OPS,PROCSHOW,SYSSHOW callback;
-    class STATE storage;
-```
+*Figure 1. LAB02 Character Device Driver Architecture and Interfaces.*
 
 The arrows show the routes used to access the driver and inspect its state. Character device operations pass through `file_operations`; procfs uses a `seq_file` callback; sysfs exposes read-only device attributes.
 
@@ -265,15 +233,20 @@ MTD/JFFS2 is a separate flash-filesystem exercise. Its [recorded session](lab02/
 
 ### Available Materials
 
-- [Driver source and Makefile](lab02/driver/)
+- [LAB02 README: setup, execution, testing, and limitations](lab02/README.md)
+- [Driver architecture PNG](lab02/driver_architecture.png)
+- [Driver source, Makefile, and compiled module](lab02/driver/)
 - [Boot integration files](lab02/rootfs/etc/)
 - [Device and procfs/sysfs test scripts](lab02/rootfs/usr/bin/)
 - [Boot log](lab02/evidence/boot_log.txt)
 - [Character device test session](lab02/evidence/driver_test.txt)
 - [procfs/sysfs test session](lab02/evidence/procfs_test.txt)
 - [MTD/JFFS2 session](lab02/evidence/mtd_jffs2.txt)
+- [Clean execution log excerpts](lab02/evidence/clean/)
+- [LAB02 PDF report](lab02/report/SE200595_Lab02_BaoCao.pdf)
 
-The assigned contributor maintains the LAB02 build/run documentation and report alongside these materials.
+The original logs preserve the execution transcripts; the clean excerpts
+present selected outputs for easier review and are not separate test runs.
 
 ## LAB03 – Debugging and Performance Analysis
 
@@ -459,10 +432,10 @@ report, and a demonstration video or link.
 | Coursework | Reports | Execution / Build Evidence |
 |---|---|---|
 | LAB01 | [Word and PDF](lab01/report/) | [Boot validation](lab01/evidence/boot_validation.log) · [Build logs](lab01/evidence/) |
-| LAB02 | Maintained by the assigned contributor | [Boot, driver, procfs/sysfs and JFFS2 sessions](lab02/evidence/) |
+| LAB02 | [PDF report](lab02/report/SE200595_Lab02_BaoCao.pdf) | [Original logs](lab02/evidence/) · [Clean excerpts](lab02/evidence/clean/) |
 | Assignment 1 | [PDF report](asgn01/Assignment%201/bao_cao/) | [Test and kernel logs](asgn01/Assignment%201/logs/) |
 
-Reports for LAB02, LAB03, and Assignment 2 will be linked with their uploads.
+Reports for LAB03 and Assignment 2 will be linked with their uploads.
 
 ### Documentation Conventions
 
