@@ -1,0 +1,83 @@
+LAB02 - MTD / JFFS2 CLEAN LOG
+Source: mtd_jffs2.txt - first recorded session
+Commands are normalized from original log; outputs are extracted verbatim.
+
+=== 1. NAND simulator / mtdinfo ===
+$ sudo modprobe nandsim first_id_byte=0x20 second_id_byte=0x35
+$ sudo modprobe mtdblock
+$ sudo modprobe jffs2
+$ cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 02000000 00001000 "BIOS"
+mtd1: 02000000 00004000 "NAND simulator partition 0"
+$ sudo mtdinfo /dev/mtd1
+mtd1
+Name:                           NAND simulator partition 0
+Type:                           nand
+Eraseblock size:                16384 bytes, 16.0 KiB
+Amount of eraseblocks:          2048 (33554432 bytes, 32.0 MiB)
+Minimum input/output unit size: 512 bytes
+Sub-page size:                  256 bytes
+OOB size:                       16 bytes
+Character device major/minor:   90:2
+Bad blocks are allowed:         true
+Device is writable:             true
+
+=== 2. flash_erase ===
+$ sudo flash_erase /dev/mtd1 0 0
+Erasing 32768 Kibyte @ 0 --  0 % complete Erasing 32768 Kibyte @ 0 -- 100 % complete
+
+=== 3. Build JFFS2 image ===
+$ mkdir -p /tmp/jffs2_data/logs
+$ echo 'Hello from JFFS2!' > /tmp/jffs2_data/hello.txt
+$ echo 'Embedded Linux Lab2' > /tmp/jffs2_data/info.txt
+$ date > /tmp/jffs2_data/logs/boot.log
+$ sudo mkfs.jffs2 --root=/tmp/jffs2_data --eraseblock=0x4000 --output=/tmp/rootfs.jffs2 --pad --no-cleanmarkers
+$ ls -lh /tmp/rootfs.jffs2
+-rw-r--r-- 1 root root 16K Thg 10 15 14:09 /tmp/rootfs.jffs2
+
+=== 4. nandwrite ===
+$ sudo nandwrite -p /dev/mtd1 /tmp/rootfs.jffs2
+Writing data to block 0 at offset 0x0
+
+=== 5. Mount JFFS2 and read files ===
+$ sudo mkdir -p /mnt/jffs2
+$ sudo mount -t jffs2 /dev/mtdblock1 /mnt/jffs2
+$ ls -la /mnt/jffs2
+total 5
+drwxr-xr-x 4 root           root              0 Thg 1   1  1970 .
+drwxr-xr-x 3 root           root           4096 Thg 10  8 23:24 ..
+-rw-rw-r-- 1 quocthinh_2303 quocthinh_2303   18 Thg 10 15 14:08 hello.txt
+-rw-rw-r-- 1 quocthinh_2303 quocthinh_2303   20 Thg 10 15 14:08 info.txt
+drwxrwxr-x 2 quocthinh_2303 quocthinh_2303    0 Thg 10 15 14:08 logs
+$ cat /mnt/jffs2/hello.txt
+Hello from JFFS2!
+$ cat /mnt/jffs2/info.txt
+Embedded Linux Lab2
+$ cat /mnt/jffs2/logs/boot.log
+Thứ năm, 15 Tháng 10 năm 2026 14:08:36 +07
+
+=== 6. Persistence after unmount/mount ===
+$ sudo sh -c 'echo "Written at $(date)" >> /mnt/jffs2/logs/boot.log'
+$ sudo sh -c 'echo "New runtime file" > /mnt/jffs2/runtime.txt'
+$ cat /mnt/jffs2/logs/boot.log
+Thứ năm, 15 Tháng 10 năm 2026 14:08:36 +07
+Written at Thứ năm, 15 Tháng 10 năm 2026 14:10:19 +07
+$ cat /mnt/jffs2/runtime.txt
+New runtime file
+$ sudo umount /mnt/jffs2
+$ sudo mount -t jffs2 /dev/mtdblock1 /mnt/jffs2
+$ cat /mnt/jffs2/logs/boot.log
+Thứ năm, 15 Tháng 10 năm 2026 14:08:36 +07
+Written at Thứ năm, 15 Tháng 10 năm 2026 14:10:19 +07
+$ cat /mnt/jffs2/runtime.txt
+New runtime file
+
+=== 7. NAND dump / ECC ===
+$ sudo nanddump --oob -l 512 -f /tmp/dump.bin /dev/mtd1
+ECC failed: 0
+ECC corrected: 0
+Number of bad blocks: 0
+Number of bbt blocks: 0
+Block size 16384, page size 512, OOB size 16
+Dumping data starting at 0x00000000 and ending at 0x00000200...
