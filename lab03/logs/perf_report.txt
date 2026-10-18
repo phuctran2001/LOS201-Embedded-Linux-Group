@@ -1,0 +1,99 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 362  of event 'cpu_core/cycles/P'
+# Event count (approx.): 398893699
+#
+# Children      Self  Command      Shared Object         Symbol                            
+# ........  ........  ...........  ....................  ..................................
+#
+    99.68%    99.68%  perf_target  perf_target           [.] main
+            |
+            ---_start
+               __libc_start_main_impl (inlined)
+               call_init (inlined)
+               __libc_start_call_main
+               main
+
+    99.68%     0.00%  perf_target  perf_target           [.] _start
+            |
+            ---_start
+               __libc_start_main_impl (inlined)
+               call_init (inlined)
+               __libc_start_call_main
+               main
+
+    99.68%     0.00%  perf_target  libc.so.6             [.] __libc_start_main_impl (inlined)
+            |
+            ---__libc_start_main_impl (inlined)
+               call_init (inlined)
+               __libc_start_call_main
+               main
+
+    99.68%     0.00%  perf_target  libc.so.6             [.] call_init (inlined)
+            |
+            ---call_init (inlined)
+               __libc_start_call_main
+               main
+
+    99.68%     0.00%  perf_target  libc.so.6             [.] __libc_start_call_main
+            |
+            ---__libc_start_call_main
+               main
+
+     0.21%     0.00%  perf_target  [kernel.kallsyms]     [.] entry_SYSCALL_64_after_hwframe
+     0.21%     0.00%  perf_target  [kernel.kallsyms]     [.] do_syscall_64
+     0.21%     0.00%  perf_target  [kernel.kallsyms]     [.] x64_sys_call
+     0.20%     0.00%  perf_target  ld-linux-x86-64.so.2  [.] _dl_start_user
+     0.20%     0.00%  perf_target  ld-linux-x86-64.so.2  [.] _dl_start
+     0.20%     0.00%  perf_target  ld-linux-x86-64.so.2  [.] _dl_start_final (inlined)
+     0.20%     0.00%  perf_target  ld-linux-x86-64.so.2  [.] _dl_sysdep_start
+     0.20%     0.00%  perf_target  ld-linux-x86-64.so.2  [.] dl_main
+     0.17%     0.00%  perf_target  [kernel.kallsyms]     [.] asm_exc_page_fault
+     0.12%     0.00%  perf_target  [unknown]             [k] 0x00007ad1d14f7f0b
+     0.12%     0.00%  perf_target  [kernel.kallsyms]     [.] __x64_sys_execve
+     0.12%     0.00%  perf_target  [kernel.kallsyms]     [.] do_execveat_common.isra.0
+     0.12%     0.00%  perf_target  [kernel.kallsyms]     [.] bprm_execve
+     0.12%     0.00%  perf_target  [kernel.kallsyms]     [.] bprm_execve.part.0
+     0.12%     0.00%  perf_target  [kernel.kallsyms]     [.] exec_binprm
+     0.12%     0.00%  perf_target  [kernel.kallsyms]     [.] load_elf_binary
+     0.11%     0.11%  perf_target  [kernel.kallsyms]     [k] __alloc_frozen_pages_noprof
+     0.11%     0.00%  perf_target  libc.so.6             [.] __libc_early_init
+     0.11%     0.00%  perf_target  [kernel.kallsyms]     [.] exc_page_fault
+     0.11%     0.00%  perf_target  [kernel.kallsyms]     [.] do_user_addr_fault
+     0.11%     0.00%  perf_target  [kernel.kallsyms]     [.] handle_mm_fault
+     0.11%     0.00%  perf_target  [kernel.kallsyms]     [.] __handle_mm_fault
+     0.11%     0.00%  perf_target  [kernel.kallsyms]     [.] handle_pte_fault
+     0.11%     0.00%  perf_target  [kernel.kallsyms]     [.] do_anonymous_page
+     0.11%     0.00%  perf_target  [kernel.kallsyms]     [.] alloc_anon_folio
+     0.11%     0.00%  perf_target  [kernel.kallsyms]     [.] vma_alloc_folio_noprof
+     0.11%     0.00%  perf_target  [kernel.kallsyms]     [.] alloc_pages_mpol
+     0.09%     0.09%  perf_target  [kernel.kallsyms]     [k] ext4_file_read_iter
+     0.09%     0.00%  perf_target  ld-linux-x86-64.so.2  [.] rtld_timer_accum (inlined)
+     0.09%     0.00%  perf_target  ld-linux-x86-64.so.2  [.] rtld_timer_stop (inlined)
+     0.09%     0.00%  perf_target  ld-linux-x86-64.so.2  [.] _dl_map_object_deps
+     0.09%     0.00%  perf_target  ld-linux-x86-64.so.2  [.] __GI__dl_catch_exception (inlined)
+     0.09%     0.00%  perf_target  ld-linux-x86-64.so.2  [.] set_catch (inlined)
+     0.09%     0.00%  perf_target  ld-linux-x86-64.so.2  [.] openaux
+     0.09%     0.00%  perf_target  ld-linux-x86-64.so.2  [.] _dl_map_new_object
+     0.09%     0.00%  perf_target  ld-linux-x86-64.so.2  [.] __read_nocancel (inlined)
+     0.09%     0.00%  perf_target  [kernel.kallsyms]     [.] __x64_sys_read
+     0.09%     0.00%  perf_target  [kernel.kallsyms]     [.] ksys_read
+     0.09%     0.00%  perf_target  [kernel.kallsyms]     [.] vfs_read
+     0.06%     0.06%  perf_target  [kernel.kallsyms]     [k] smp_call_function_many_cond
+     0.06%     0.00%  perf_target  [kernel.kallsyms]     [.] setup_arg_pages
+     0.06%     0.00%  perf_target  [kernel.kallsyms]     [.] relocate_vma_down
+     0.06%     0.00%  perf_target  [kernel.kallsyms]     [.] move_page_tables
+     0.06%     0.00%  perf_target  [kernel.kallsyms]     [.] move_ptes
+     0.06%     0.00%  perf_target  [kernel.kallsyms]     [.] flush_tlb_mm_range
+     0.06%     0.00%  perf_target  [kernel.kallsyms]     [.] native_flush_tlb_multi
+     0.06%     0.00%  perf_target  [kernel.kallsyms]     [.] on_each_cpu_cond_mask
+     0.06%     0.06%  perf_target  [kernel.kallsyms]     [k] _copy_to_user
+     0.06%     0.00%  perf_target  [kernel.kallsyms]     [.] create_elf_tables
+
+
+#
+# (Cannot load tips.txt file, please install perf!)
+#

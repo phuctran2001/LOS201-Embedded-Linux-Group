@@ -1,0 +1,32 @@
+=== LAB-03: Performance Profiling ===
+Result: 4800000242
+
+ Performance counter stats for './perf_target':
+
+                 3      context-switches                 #     31.9 cs/sec  cs_per_second     
+                 1      cpu-migrations                   #     10.6 migrations/sec  migrations_per_second
+                63      page-faults                      #    669.1 faults/sec  page_faults_per_second
+             94.16 msec task-clock                       #      1.0 CPUs  CPUs_utilized       
+             4,061      cpu_core/branch-misses/          #      0.0 %  branch_miss_rate         (97.46%)
+       102,412,690      cpu_core/branches/               #   1087.6 M/sec  branch_frequency     (97.46%)
+       400,663,324      cpu_core/cpu-cycles/             #      4.3 GHz  cycles_frequency       (97.46%)
+     2,044,198,217      cpu_core/instructions/           #      5.1 instructions  insn_per_cycle  (97.46%)
+           916,418      cpu_atom/branch-misses/          #      7.0 %  branch_miss_rate         (0.31%)
+        21,952,779      cpu_atom/branches/               #    233.1 M/sec  branch_frequency     (1.36%)
+       137,626,337      cpu_atom/cpu-cycles/             #      1.5 GHz  cycles_frequency       (2.42%)
+       398,192,047      cpu_atom/instructions/           #      2.9 instructions  insn_per_cycle  (2.54%)
+             TopdownL1 (cpu_core)                        #      0.0 %  tma_bad_speculation    
+                                                         #      4.3 %  tma_frontend_bound       (97.46%)
+                                                         #      2.0 %  tma_backend_bound      
+                                                         #     93.7 %  tma_retiring             (97.46%)
+             TopdownL1 (cpu_atom)                        #     20.1 %  tma_backend_bound        (1.18%)
+                                                         #      3.4 %  tma_frontend_bound       (0.12%)
+                                                         #      nan %  tma_bad_speculation    
+                                                         #      nan %  tma_retiring             (0.00%)
+
+       0.095184738 seconds time elapsed
+
+       0.093199000 seconds user
+       0.002004000 seconds sys
+
+
