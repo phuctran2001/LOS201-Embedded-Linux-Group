@@ -1,0 +1,27 @@
+========================================
+LAB02 - QEMU BOOT CLEAN LOG
+========================================
+Source: boot_log.txt
+Selected boot messages from original QEMU log.
+
+=== 1. Linux Kernel Information ===
+Booting Linux on physical CPU 0x0
+Linux version 5.15.0 (quocthinh_2303@Prestige-14-AI-Studio) (arm-linux-gnueabihf-gcc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0, GNU ld (GNU Binutils for Ubuntu) 2.38) #1 SMP Thu Sep 17 22:28:47 +07 2026
+Kernel command line: console=ttyAMA0,115200 rdinit=/sbin/init mem=512M
+
+=== 2. Kernel Initialization ===
+Freeing unused kernel image (initmem) memory: 1024K
+Run /sbin/init as init process
+
+=== 3. Automatic Driver Loading ===
+[ LAB-02 ] Loading lab2_driver module...
+lab2_driver: loading out-of-tree module taints kernel.
+lab2_driver: initializing module
+lab2_driver: loaded, major=240
+lab2_driver: /proc/lab2_info created
+[ LAB-02 ] lab2_driver loaded OK
+
+=== 4. Device Node ===
+mknod: /dev/lab2: File exists
+[ LAB-02 ] /dev/lab2 created (major=240, minor=0)
+
