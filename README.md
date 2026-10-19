@@ -144,56 +144,11 @@ minimal userspace construction, and booting Linux in QEMU.
 
 ### Build and Execution Architecture
 
-```mermaid
-flowchart TB
-    HOST["Ubuntu host and ARM cross-toolchain"]
+![LAB01 Build and Execution Architecture](lab01/lab01_build_architecture.png)
 
-    subgraph BUILD["1. Build components"]
-        KERNEL["Linux 5.15"]
-        BUSYBOX["BusyBox 1.35.0"]
-        UBOOT["U-Boot 2022.04"]
-    end
+*Figure 1. LAB01 Build and Execution Architecture.*
 
-    subgraph FILES["2. Prepare boot files"]
-        KIMG["zImage and board DTB"]
-        ROOTFS["BusyBox rootfs and startup scripts"]
-        INITRAMFS["rootfs-final.cpio.gz"]
-        UIMG["u-boot executable"]
-    end
-
-    subgraph RUN["3. QEMU experiments"]
-        LINUX["Direct Linux boot: vexpress-a9"]
-        CONSOLE["U-Boot console: board and environment"]
-    end
-
-    CHECK["Verify shell, CPU, memory, mounts and devices"]
-    HOST --> KERNEL
-    HOST --> BUSYBOX
-    HOST --> UBOOT
-    KERNEL --> KIMG
-    BUSYBOX --> ROOTFS
-    ROOTFS --> INITRAMFS
-    UBOOT --> UIMG
-    KIMG --> LINUX
-    INITRAMFS --> LINUX
-    UIMG --> CONSOLE
-    LINUX --> CHECK
-
-    style BUILD fill:#f8fafc,stroke:#94a3b8,color:#0f172a
-    style FILES fill:#f8fafc,stroke:#94a3b8,color:#0f172a
-    style RUN fill:#f8fafc,stroke:#94a3b8,color:#0f172a
-
-    classDef build fill:#dbeafe,stroke:#2563eb,color:#172554,stroke-width:2px;
-    classDef artifact fill:#ede9fe,stroke:#7c3aed,color:#2e1065,stroke-width:2px;
-    classDef runtime fill:#dcfce7,stroke:#16a34a,color:#14532d,stroke-width:2px;
-    classDef terminal fill:#ffedd5,stroke:#ea580c,color:#431407,stroke-width:2px;
-    class HOST,KERNEL,BUSYBOX,UBOOT build;
-    class KIMG,ROOTFS,INITRAMFS,UIMG artifact;
-    class LINUX,CHECK runtime;
-    class CONSOLE terminal;
-```
-
-Blue blocks represent the host and build components; purple blocks are generated files; green blocks show the Linux runtime and checks; orange identifies the separate bootloader experiment.
+The diagram summarizes the LAB01 build and execution workflow. The ARM cross-compiler is used to build the Linux kernel, BusyBox root filesystem, and U-Boot. Direct Linux boot in QEMU and U-Boot console testing are carried out as separate experiments.
 
 The tested Linux command passes `zImage`, the board DTB and the initramfs directly to QEMU. U-Boot is built and exercised in its own console session. The [LAB01 guide](lab01/README.md) explains both execution paths.
 
