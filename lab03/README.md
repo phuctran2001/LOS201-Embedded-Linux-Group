@@ -1,10 +1,11 @@
 # LAB03 — Debugging and Performance Analysis
 
+**Contributor:** Đinh Quang Ngọc 
+
 **Course:** LOS201 — Embedded Linux Systems, FPT University  
 **Platform:** Ubuntu Linux (x86-64) / ARM Cortex-A9 (QEMU)  
 **Language:** C  
 **Development Tools:** GDB Multiarch, Valgrind, strace, perf, cyclictest
-**Contributor:** Đinh Quang Ngọc 
 ## Overview
 
 This lab explores debugging techniques and performance analysis for Embedded Linux applications. The experiments focus on identifying programming errors, detecting memory leaks, analyzing system calls, profiling CPU performance, and measuring real-time scheduling latency.
