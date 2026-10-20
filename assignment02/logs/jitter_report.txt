@@ -1,0 +1,11 @@
+QEMU vexpress-a9; ARMv7-A; interval=100 ms; duration=105 s per run
+Policy        Samples  Min(us)  Avg(us)  Max(us)  P99(us)
+SCHED_OTHER   1050     233      609.55   1359     974
+SCHED_FIFO    1050     359      626.44   1133     971
+
+Histogram bins (us):      [0,100)  [100,500)  [500,1000)  [1000,+)
+SCHED_OTHER              0        171        870         9
+SCHED_FIFO               0        113        929         8
+
+SCHED_OTHER: read=1023 processed=1023 buffer_dropped=0 queue_dropped=0 read_errors=0
+SCHED_FIFO:  read=1042 processed=1042 buffer_dropped=0 queue_dropped=0 read_errors=0

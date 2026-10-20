@@ -1,0 +1,54 @@
+Breakpoint 1 at 0x39b1: file app/circular_buffer.c, line 53.
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/usr/lib/x86_64-linux-gnu/libthread_db.so.1".
+[New Thread 0x7ffff7bff6c0 (LWP 29077)]
+[New Thread 0x7ffff73fe6c0 (LWP 29078)]
+[New Thread 0x7ffff6bfd6c0 (LWP 29079)]
+[Switching to Thread 0x7ffff6bfd6c0 (LWP 29079)]
+
+Thread 4 "sms_app_gdb_cur" hit Breakpoint 1, sms_buffer_pop (buffer=0x55555555d010, sample=0x7ffff6bfcd50) at app/circular_buffer.c:53
+53	    if (buffer == NULL || sample == NULL)
+#0  sms_buffer_pop (buffer=0x55555555d010, sample=0x7ffff6bfcd50) at app/circular_buffer.c:53
+#1  0x00005555555582d3 in sms_processor_thread (argument=0x7fffffff5a40) at app/processor_thread.c:55
+#2  0x00007ffff7ca3dfa in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:454
+#3  0x00007ffff7d375cc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+$1 = 0
+$2 = 0
+$3 = 0
+  Id   Target Id                                           Frame 
+  1    Thread 0x7ffff7fa1740 (LWP 29074) "sms_app_gdb_cur" __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:62
+  2    Thread 0x7ffff7bff6c0 (LWP 29077) "sms_app_gdb_cur" __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+  3    Thread 0x7ffff73fe6c0 (LWP 29078) "sms_app_gdb_cur" __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+* 4    Thread 0x7ffff6bfd6c0 (LWP 29079) "sms_app_gdb_cur" sms_buffer_pop (buffer=0x55555555d010, sample=0x7ffff6bfcd50) at app/circular_buffer.c:53
+
+Thread 4 (Thread 0x7ffff6bfd6c0 (LWP 29079) "sms_app_gdb_cur"):
+#0  sms_buffer_pop (buffer=0x55555555d010, sample=0x7ffff6bfcd50) at app/circular_buffer.c:53
+#1  0x00005555555582d3 in sms_processor_thread (argument=0x7fffffff5a40) at app/processor_thread.c:55
+#2  0x00007ffff7ca3dfa in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:454
+#3  0x00007ffff7d375cc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 3 (Thread 0x7ffff73fe6c0 (LWP 29078) "sms_app_gdb_cur"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff7ca039c in __internal_syscall_cancel (a1=<optimized out>, a2=<optimized out>, a3=<optimized out>, a4=<optimized out>, a5=<optimized out>, a6=0, nr=243) at ./nptl/cancellation.c:49
+#2  __syscall_cancel (a1=<optimized out>, a2=<optimized out>, a3=<optimized out>, a4=<optimized out>, a5=<optimized out>, a6=a6@entry=0, nr=243) at ./nptl/cancellation.c:75
+#3  0x00007ffff7caff3c in ___mq_timedreceive_time64 (mqdes=<optimized out>, msg_ptr=<optimized out>, msg_len=<optimized out>, msg_prio=<optimized out>, abs_timeout=<optimized out>) at ../sysdeps/unix/sysv/linux/mq_timedreceive.c:35
+#4  0x0000555555558435 in sms_alert_thread (argument=0x7fffffff5990) at app/alert_thread.c:34
+#5  0x00007ffff7ca3dfa in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:454
+#6  0x00007ffff7d375cc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 2 (Thread 0x7ffff7bff6c0 (LWP 29077) "sms_app_gdb_cur"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff7ca039c in __internal_syscall_cancel (a1=<optimized out>, a2=<optimized out>, a3=<optimized out>, a4=<optimized out>, a5=<optimized out>, a6=0, nr=243) at ./nptl/cancellation.c:49
+#2  __syscall_cancel (a1=<optimized out>, a2=<optimized out>, a3=<optimized out>, a4=<optimized out>, a5=<optimized out>, a6=a6@entry=0, nr=243) at ./nptl/cancellation.c:75
+#3  0x00007ffff7caff3c in ___mq_timedreceive_time64 (mqdes=<optimized out>, msg_ptr=<optimized out>, msg_len=<optimized out>, msg_prio=<optimized out>, abs_timeout=<optimized out>) at ../sysdeps/unix/sysv/linux/mq_timedreceive.c:35
+#4  0x0000555555558902 in sms_logger_thread (argument=0x7fffffff5b20) at app/logger_thread.c:46
+#5  0x00007ffff7ca3dfa in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:454
+#6  0x00007ffff7d375cc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 1 (Thread 0x7ffff7fa1740 (LWP 29074) "sms_app_gdb_cur"):
+#0  __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:62
+#1  0x00007ffff7d374de in __clone3_internal (cl_args=0x7fffffff5710, func=0x7ffff7ca3b00 <start_thread>, arg=0x7ffff63fc6c0) at ../sysdeps/unix/sysv/linux/clone-internal.c:82
+#2  __GI___clone_internal (cl_args=cl_args@entry=0x7fffffff5710, func=func@entry=0x7ffff7ca3b00 <start_thread>, arg=arg@entry=0x7ffff63fc6c0) at ../sysdeps/unix/sysv/linux/clone-internal.c:100
+#3  0x00007ffff7ca3905 in create_thread (pd=pd@entry=0x7ffff63fc6c0, attr=attr@entry=0x7fffffff5820, stopped_start=stopped_start@entry=0x7fffffff5816, stackaddr=stackaddr@entry=0x7ffff5bfc000, stacksize=<optimized out>, thread_ran=thread_ran@entry=0x7fffffff5817) at ./nptl/pthread_create.c:298
+#4  0x00007ffff7ca462e in __pthread_create_2_1 (newthread=<optimized out>, attr=<optimized out>, start_routine=<optimized out>, arg=<optimized out>) at ./nptl/pthread_create.c:863
+#5  0x0000555555557490 in main (argc=5, argv=0x7fffffffddb8) at app/sms_app.c:206
