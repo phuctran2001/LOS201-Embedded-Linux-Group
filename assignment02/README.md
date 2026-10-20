@@ -1,6 +1,4 @@
 # Assignment 02 – Embedded Linux Sensor Monitoring System
-
-**Student ID:** SE201573  
 **Project:** Embedded Linux – Assignment 02  
 **Operating System:** Ubuntu Linux  
 **Target Architecture:** ARMv7 (Cortex-A9)  
