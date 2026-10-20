@@ -2,7 +2,7 @@
 
 **Project:** Embedded Linux – Assignment 02  
 **Course:** LOS201, FPT University  
-**Implementation contributor:** Trần Thiên Phúc – SE203798  
+**Contributors:** Trần Thiên Phúc (SE203798), Nguyễn Huy Hoàng (SE203347), Đinh Quang Ngọc (SE201573), and Võ Quốc Thịnh (SE200595)  
 **Development host:** Ubuntu Linux, x86_64  
 **Target architecture:** ARMv7-A (Cortex-A9)  
 **Emulator:** QEMU (`vexpress-a9`)  
@@ -12,6 +12,8 @@
 ---
 
 ## 1. Project Overview
+
+Assignment 2 is a shared project completed by all four group members. The implementation, testing, analysis, and documentation are presented as a group submission. Git commit history records which account submitted each change and does not imply sole authorship of the project.
 
 This project implements a Sensor Monitoring System using a simulated Linux sensor driver and a multithreaded userspace application. The application collects temperature and humidity samples, calculates rolling averages, generates alerts, and writes timestamped records to a log file.
 
