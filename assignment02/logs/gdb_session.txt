@@ -1,0 +1,83 @@
+Breakpoint 1 at 0x2c6f: file host_test/circular_buffer.c, line 25.
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/usr/lib/x86_64-linux-gnu/libthread_db.so.1".
+[New Thread 0x7ffff7bff6c0 (LWP 16458)]
+[New Thread 0x7ffff73fe6c0 (LWP 16459)]
+[New Thread 0x7ffff6bfd6c0 (LWP 16460)]
+[New Thread 0x7ffff63fc6c0 (LWP 16461)]
+[Switching to Thread 0x7ffff63fc6c0 (LWP 16461)]
+
+Thread 5 "sms_app_valgrin" hit Breakpoint 1, sms_buffer_push (buffer=0x7fffffff57d0, sample=0x7ffff63fbde0) at host_test/circular_buffer.c:25
+25	    if (buffer == NULL || sample == NULL)
+  Id   Target Id                                           Frame 
+  1    Thread 0x7ffff7fa1740 (LWP 16455) "sms_app_valgrin" __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+  2    Thread 0x7ffff7bff6c0 (LWP 16458) "sms_app_valgrin" __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+  3    Thread 0x7ffff73fe6c0 (LWP 16459) "sms_app_valgrin" __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+  4    Thread 0x7ffff6bfd6c0 (LWP 16460) "sms_app_valgrin" __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+* 5    Thread 0x7ffff63fc6c0 (LWP 16461) "sms_app_valgrin" sms_buffer_push (buffer=0x7fffffff57d0, sample=0x7ffff63fbde0) at host_test/circular_buffer.c:25
+
+Thread 5 (Thread 0x7ffff63fc6c0 (LWP 16461) "sms_app_valgrin"):
+#0  sms_buffer_push (buffer=0x7fffffff57d0, sample=0x7ffff63fbde0) at host_test/circular_buffer.c:25
+#1  0x0000555555558151 in sms_sensor_thread (argument=0x7fffffff5c50) at host_test/sensor_thread.c:150
+#2  0x00007ffff7ca3dfa in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:454
+#3  0x00007ffff7d375cc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 4 (Thread 0x7ffff6bfd6c0 (LWP 16460) "sms_app_valgrin"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff7ca030c in __internal_syscall_cancel (a1=a1@entry=140737488313408, a2=<optimized out>, a3=a3@entry=0, a4=a4@entry=0, a5=a5@entry=0, a6=a6@entry=4294967295, nr=202) at ./nptl/cancellation.c:49
+#2  0x00007ffff7ca06e7 in __futex_abstimed_wait_common64 (private=0, futex_word=0x7fffffff5c40, expected=0, op=393, abstime=0x0, cancel=true) at ./nptl/futex-internal.c:57
+#3  __futex_abstimed_wait_common (futex_word=0x7fffffff5c40, expected=0, clockid=0, abstime=0x0, private=0, cancel=true) at ./nptl/futex-internal.c:87
+#4  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x7fffffff5c40, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#5  0x00007ffff7ca30c7 in __pthread_cond_wait_common (cond=<optimized out>, mutex=0x7fffffff5bf8, clockid=0, abstime=0x0) at ./nptl/pthread_cond_wait.c:421
+#6  ___pthread_cond_wait (cond=<optimized out>, mutex=0x7fffffff5bf8) at ./nptl/pthread_cond_wait.c:453
+#7  0x0000555555556df9 in sms_buffer_pop (buffer=0x7fffffff57d0, sample=0x7ffff6bfcd50) at host_test/circular_buffer.c:58
+#8  0x00005555555579a2 in sms_processor_thread (argument=0x7fffffff55d0) at host_test/processor_thread.c:55
+#9  0x00007ffff7ca3dfa in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:454
+#10 0x00007ffff7d375cc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 3 (Thread 0x7ffff73fe6c0 (LWP 16459) "sms_app_valgrin"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff7ca039c in __internal_syscall_cancel (a1=<optimized out>, a2=<optimized out>, a3=<optimized out>, a4=<optimized out>, a5=<optimized out>, a6=0, nr=243) at ./nptl/cancellation.c:49
+#2  __syscall_cancel (a1=<optimized out>, a2=<optimized out>, a3=<optimized out>, a4=<optimized out>, a5=<optimized out>, a6=a6@entry=0, nr=243) at ./nptl/cancellation.c:75
+#3  0x00007ffff7caff3c in ___mq_timedreceive_time64 (mqdes=<optimized out>, msg_ptr=<optimized out>, msg_len=<optimized out>, msg_prio=<optimized out>, abs_timeout=<optimized out>) at ../sysdeps/unix/sysv/linux/mq_timedreceive.c:35
+#4  0x00005555555568c8 in sms_alert_thread (argument=0x7fffffff5520) at host_test/alert_thread.c:34
+#5  0x00007ffff7ca3dfa in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:454
+#6  0x00007ffff7d375cc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 2 (Thread 0x7ffff7bff6c0 (LWP 16458) "sms_app_valgrin"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff7ca039c in __internal_syscall_cancel (a1=<optimized out>, a2=<optimized out>, a3=<optimized out>, a4=<optimized out>, a5=<optimized out>, a6=0, nr=243) at ./nptl/cancellation.c:49
+#2  __syscall_cancel (a1=<optimized out>, a2=<optimized out>, a3=<optimized out>, a4=<optimized out>, a5=<optimized out>, a6=a6@entry=0, nr=243) at ./nptl/cancellation.c:75
+#3  0x00007ffff7caff3c in ___mq_timedreceive_time64 (mqdes=<optimized out>, msg_ptr=<optimized out>, msg_len=<optimized out>, msg_prio=<optimized out>, abs_timeout=<optimized out>) at ../sysdeps/unix/sysv/linux/mq_timedreceive.c:35
+#4  0x00005555555570a8 in sms_logger_thread (argument=0x7fffffff56b0) at host_test/logger_thread.c:37
+#5  0x00007ffff7ca3dfa in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:454
+#6  0x00007ffff7d375cc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 1 (Thread 0x7ffff7fa1740 (LWP 16455) "sms_app_valgrin"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff7ca030c in __internal_syscall_cancel (a1=a1@entry=0, a2=a2@entry=0, a3=a3@entry=140737488311392, a4=a4@entry=140737488311392, a5=a5@entry=0, a6=a6@entry=0, nr=230) at ./nptl/cancellation.c:49
+#2  0x00007ffff7cf5af2 in __GI___clock_nanosleep (clock_id=<optimized out>, clock_id@entry=0, flags=flags@entry=0, req=req@entry=0x7fffffff5460, rem=rem@entry=0x7fffffff5460) at ../sysdeps/unix/sysv/linux/clock_nanosleep.c:48
+#3  0x00007ffff7d03707 in __GI___nanosleep (req=req@entry=0x7fffffff5460, rem=rem@entry=0x7fffffff5460) at ../sysdeps/unix/sysv/linux/nanosleep.c:25
+#4  0x00007ffff7d1aebe in __sleep (seconds=0) at ../sysdeps/posix/sleep.c:55
+#5  0x0000555555558ea6 in main (argc=5, argv=0x7fffffffddc8) at host_test/sms_app.c:213
+buffer = 0x7fffffff57d0
+sample = 0x7ffff63fbde0
+$1 = 0
+$2 = 0
+$3 = 0
+Breakpoint 2 at 0x555555556dad: file host_test/circular_buffer.c, line 52.
+[Switching to Thread 0x7ffff6bfd6c0 (LWP 16460)]
+
+Thread 4 "sms_app_valgrin" hit Breakpoint 2, sms_buffer_pop (buffer=0x7fffffff57d0, sample=0x7ffff6bfcd50) at host_test/circular_buffer.c:52
+52	    if (buffer == NULL || sample == NULL)
+  Id   Target Id                                           Frame 
+  1    Thread 0x7ffff7fa1740 (LWP 16455) "sms_app_valgrin" __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+  2    Thread 0x7ffff7bff6c0 (LWP 16458) "sms_app_valgrin" __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+  3    Thread 0x7ffff73fe6c0 (LWP 16459) "sms_app_valgrin" __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+* 4    Thread 0x7ffff6bfd6c0 (LWP 16460) "sms_app_valgrin" sms_buffer_pop (buffer=0x7fffffff57d0, sample=0x7ffff6bfcd50) at host_test/circular_buffer.c:52
+  5    Thread 0x7ffff63fc6c0 (LWP 16461) "sms_app_valgrin" __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+buffer = 0x7fffffff57d0
+sample = 0x7ffff6bfcd50
+$4 = 1
+$5 = 1
+$6 = 0

@@ -1,0 +1,6 @@
+open /dev/sms_sensor: No such file or directory
+SMS running: interval=500 ms, T>40.0 C, H>80.0%, duration=2 s
+Summary: read=0 processed=0 buffer_dropped=0 queue_dropped=0 logs=0 rotations=0 read_errors=1
+Alerts: temperature=0 humidity=0 spike=0
+Jitter: no samples
+Shutdown complete

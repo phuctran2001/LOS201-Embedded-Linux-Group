@@ -1,0 +1,27 @@
+SMS running: interval=500 ms, T>40.0 C, H>80.0%, duration=5 s
+[SENSOR] 2008888,24.84,81.78
+[ALERT][2008888] HUMID_HIGH value=81.78 threshold=80.00
+[SENSOR] 2009388,42.88,48.83
+[ALERT][2009388] TEMP_HIGH value=42.88 threshold=40.00
+[ALERT][2009388] TEMP_SPIKE value=18.04 threshold=5.00
+[SENSOR] 2009888,39.93,30.57
+[SENSOR] 2010388,41.69,33.38
+[ALERT][2010388] TEMP_HIGH value=41.69 threshold=40.00
+[SENSOR] 2010889,34.18,67.05
+[ALERT][2010889] TEMP_SPIKE value=7.51 threshold=5.00
+[SENSOR] 2011389,31.66,39.31
+[SENSOR] 2011891,40.24,48.15
+[ALERT][2011891] TEMP_HIGH value=40.24 threshold=40.00
+[ALERT][2011891] TEMP_SPIKE value=8.58 threshold=5.00
+[SENSOR] 2012391,23.33,77.84
+[ALERT][2012391] TEMP_SPIKE value=16.91 threshold=5.00
+[SENSOR] 2012891,37.23,32.85
+[ALERT][2012891] TEMP_SPIKE value=13.90 threshold=5.00
+[SENSOR] 2013391,31.00,48.38
+[ALERT][2013391] TEMP_SPIKE value=6.23 threshold=5.00
+Summary: read=10 processed=10 buffer_dropped=0 queue_dropped=0 logs=20 rotations=0 read_errors=0
+Alerts: temperature=3 humidity=1 spike=6
+Jitter policy: SCHED_OTHER; samples: 10
+Jitter Min/Avg/Max/P99 (us): 458 / 662.80 / 817 / 817
+Histogram [0,100):0 [100,500):1 [500,1000):9 [1000,+):0
+Shutdown complete
