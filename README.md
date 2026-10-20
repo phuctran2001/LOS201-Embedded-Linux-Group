@@ -221,47 +221,175 @@ MTD/JFFS2 is a separate flash-filesystem exercise. Its [recorded session](lab02/
 The original logs preserve the execution transcripts; the clean excerpts
 present selected outputs for easier review and are not separate test runs.
 
-## LAB03 – Debugging and Performance Analysis
+# LAB 03 – Embedded Linux Debugging & Performance Analysis
 
-**Contributor:** Đinh Quang Ngọc.
+**Course:** Embedded Linux Systems  
+**Lab:** 03 – Debugging and Performance Analysis  
+**Platform:** Ubuntu Linux (Host) / ARMv7 Cortex-A9 (QEMU Target)  
+**Language:** C  
+**Contributor:** Đinh Quang Ngọc
 
-### Overview
+## 1. Overview
 
-LAB03 addresses the diagnosis and analysis of Linux applications through four
-complementary areas: runtime faults, memory management, system-call and CPU
-profiling, and scheduling latency.
+This lab focuses on debugging, memory analysis, system-call tracing, CPU profiling, and real-time scheduling latency in an Embedded Linux environment.
 
-### Technical Scope
+The main tools are **GDB Multiarch, Valgrind, strace, perf, and cyclictest**.
 
-| Part | Tools | Work Covered |
+## 2. System Architecture
+
+```text
++--------------------------------------------+
+|          HOST: Ubuntu Linux (x86_64)       |
+|                                            |
+|  +-------------+    +-------------------+  |
+|  | GDB Multiarch|   | Valgrind / strace |  |
+|  | Remote Debug |   | perf / cyclictest |  |
+|  +------+------+    +-------------------+  |
+|         |                                  |
++---------|----------------------------------+
+          | TCP Remote Debugging
+          | Port 1234
+          v
++--------------------------------------------+
+|       TARGET: QEMU ARM Cortex-A9           |
+|                                            |
+|        Linux Kernel + RootFS               |
+|                  |                         |
+|           gdbserver :1234                  |
+|                  |                         |
+|             buggy_app                      |
++--------------------------------------------+
+```
+
+Host-native analysis tools run on Ubuntu; ARM application debugging uses the QEMU target.
+
+## 3. Lab Activities
+
+| Part | Tool | Main Objective |
 |---|---|---|
-| A – Remote debugging | GDB multiarch and gdbserver | Breakpoints, watchpoints, call stacks, variable inspection, and analysis of faulty C code |
-| B – Memory analysis | Valgrind Memcheck | Allocation leaks, memory ownership, corrective changes, and comparison of diagnostic output |
-| C – Application profiling | strace and perf | System-call behavior, CPU hotspots, and optimization analysis |
-| D – Real-time analysis | cyclictest and histogram plots | Scheduling latency, measurement distributions, and kernel preemption concepts |
+| A | GDB / GDB Multiarch | Identify and fix C programming bugs |
+| B | Valgrind | Detect and fix memory leaks |
+| C | strace / perf | Analyze system calls and CPU performance |
+| D | cyclictest | Measure scheduling latency |
 
-### Analysis and Interpretation
+### Part A – GDB Debugging
 
-Debugging explains where an application fails and why. Memory analysis examines
-allocation and cleanup behavior, while profiling identifies expensive execution
-paths. Latency measurements provide a separate view of scheduling behavior.
+Debug `buggy_app` to investigate:
 
-The distinction between host analysis and ARM target execution matters when
-interpreting results. Valgrind and cyclictest measurements must identify the
-system on which they were collected. Emulated timing and physical-board timing
-describe different environments.
+- Array out-of-bounds access
+- Use-after-free
+- Integer overflow
 
-PREEMPT_RT forms part of the real-time discussion. A measured comparison between
-standard and RT kernels requires separate results for both configurations.
+Use breakpoints, variable inspection, and backtraces to identify defects and verify corrections.
 
-### Review Focus
+### Part B – Memory Analysis
 
-Read faulty and corrected code together with debugger sessions, memory-analysis
-output, profiling traces, and latency plots. A useful comparison identifies the
-problem, explains the change, and relates the recorded output to the resulting
-behavior. Exact numerical findings belong with their measurement environment
-and test procedure.
+Run Valgrind on `leaky_app` to detect memory leaks and compare the original and corrected versions.
 
+### Part C – Performance Analysis
+
+Use `strace` to inspect system calls and `perf` to identify CPU-intensive functions and performance bottlenecks.
+
+### Part D – Real-Time Latency
+
+Use `cyclictest` to measure scheduling latency, collect histogram data, and compare results under different system configurations.
+
+## 4. Project Structure
+
+```text
+lab03/
+├── apps/
+│   ├── buggy_app.c
+│   ├── buggy_app
+│   ├── leaky_app.c
+│   ├── leaky_app_fixed.c
+│   └── perf_target.c
+├── logs/
+│   ├── gdb_session.txt
+│   ├── valgrind_report.txt
+│   ├── valgrind_fixed.txt
+│   ├── strace_summary.txt
+│   ├── perf_stat.txt
+│   ├── perf_report.txt
+│   └── hist_standard.txt
+├── output/
+│   └── initramfs_lab3.cpio.gz
+├── baocao/
+│   └── Lab03_Report.pdf
+└── README.md
+```
+
+*The structure is a recommended group layout; actual filenames may differ.*
+
+## 5. Basic Commands
+
+**GDB Remote Debugging**
+
+On the ARM target:
+
+```bash
+gdbserver :1234 ./buggy_app
+```
+
+On the Ubuntu host:
+
+```bash
+gdb-multiarch ./buggy_app
+```
+
+Inside GDB:
+
+```gdb
+target remote :1234
+break main
+continue
+```
+
+**Valgrind**
+
+```bash
+valgrind --leak-check=full ./leaky_app
+```
+
+**strace**
+
+```bash
+strace -c ./leaky_app
+```
+
+**perf**
+
+```bash
+perf stat ./perf_target
+perf record ./perf_target
+perf report
+```
+
+**cyclictest**
+
+```bash
+sudo cyclictest --mlockall --threads=4 \
+  --priority=80 --interval=1000 \
+  --loops=10000
+```
+
+Commands must be executed in the appropriate host or target environment. Remote GDB requires a working network connection and matching executable symbols.
+
+## 6. Expected Deliverables
+
+- Source code and executable files
+- Original and corrected program versions
+- GDB debugging evidence
+- Valgrind memory analysis reports
+- strace and perf results
+- cyclictest latency measurements and histogram
+- Group report with screenshots, analysis, and conclusions
+
+## 7. Conclusion
+
+Lab 03 demonstrates essential techniques for debugging and evaluating Embedded Linux applications. The experiments help identify software defects, detect memory problems, investigate performance bottlenecks, and evaluate scheduling latency.
+
+The collected logs and measurements provide evidence for the group's technical report.
 ## Assignment 1 – How to Write a Device Driver
 
 **Contributor:** Nguyễn Huy Hoàng.
