@@ -437,95 +437,211 @@ kernel concepts. Test output and kernel logs support the implementation review.
 
 Hoàng's commits and pull requests preserve the authorship of this submission.
 
-## Assignment 2 – Sensor Monitoring System
+# Assignment 02 — Embedded Linux Sensor Monitoring System
 
-**Contributors:** Trần Thiên Phúc, Nguyễn Huy Hoàng, Đinh Quang Ngọc, and Võ Quốc Thịnh.
+**Course:** LOS201 — Embedded Linux Systems, FPT University
 
-Assignment 2 is a shared group project. Its implementation, testing, analysis, and documentation form the group submission. See the [Assignment 2 guide](assignment02/README.md) for file-specific commands and evidence.
+**Contributors:**
+- Trần Thiên Phúc
+- Nguyễn Huy Hoàng
+- Đinh Quang Ngọc
+- Võ Quốc Thịnh
 
-### Overview
+## Overview
 
-Assignment 2 integrates device driver development, POSIX threads,
-inter-process communication, memory analysis, debugging, and real-time
-scheduling in a Sensor Monitoring System (SMS).
+This assignment implements an Embedded Linux Sensor Monitoring System using a custom Linux kernel driver and a multithreaded C application running on QEMU ARM.
 
-### Coursework Architecture
+The system collects sensor readings, processes data, generates threshold-based alerts, and records monitoring events. It also demonstrates IOCTL communication, debugging, performance profiling, and real-time scheduling.
 
-```mermaid
-flowchart TB
-    subgraph KERNEL["Kernel interface"]
-        SENSOR["Simulated sensor driver: /dev/sms_sensor"]
-    end
+## Platform
 
-    subgraph APP["Application threads"]
-        ACQUIRE["1. Sensor thread"]
-        BUFFER["Circular buffer: 64 samples"]
-        PROCESS["2. Processor thread"]
-        ALARMQ["Alarm message queue"]
-        ALERT["3. Alert thread"]
-        LOGQ["Log message queue"]
-        LOGGER["4. Logger thread"]
+| Component | Configuration |
+|---|---|
+| Development Host | Ubuntu Linux (x86-64) |
+| Target Architecture | ARMv7-A |
+| Target CPU | Cortex-A9 |
+| QEMU Machine | `vexpress-a9` |
+| Linux Kernel | 5.15 |
+| Cross-Compiler | `arm-linux-gnueabihf-` |
+| Programming Language | C |
+| Scheduling Policy | SCHED_FIFO |
 
-        ACQUIRE -->|"enqueue samples"| BUFFER
-        BUFFER -->|"dequeue samples"| PROCESS
-        PROCESS -->|"threshold events"| ALARMQ
-        ALARMQ --> ALERT
-        PROCESS -->|"processed samples"| LOGQ
-        ALERT -->|"alert records"| LOGQ
-        LOGQ --> LOGGER
-    end
+## System Architecture
 
-    subgraph OUTPUT["Application outputs"]
-        TERMINAL["Console alerts"]
-        LOGFILE["Guest log: /tmp/sms.log"]
-    end
+<img width="1311" height="1503" alt="image" src="https://github.com/user-attachments/assets/3d93d0ee-c14f-4f74-a371-d46aae9d24fb" />
 
-    SENSOR -->|"sensor readings"| ACQUIRE
-    ALERT --> TERMINAL
-    LOGGER --> LOGFILE
 
-    style KERNEL fill:#f8fafc,stroke:#94a3b8,color:#0f172a
-    style APP fill:#f8fafc,stroke:#94a3b8,color:#0f172a
-    style OUTPUT fill:#f8fafc,stroke:#94a3b8,color:#0f172a
+The monitoring system consists of a Linux kernel driver and four POSIX threads.
 
-    classDef kernel fill:#ede9fe,stroke:#7c3aed,color:#2e1065,stroke-width:2px;
-    classDef thread fill:#dbeafe,stroke:#2563eb,color:#172554,stroke-width:2px;
-    classDef shared fill:#dcfce7,stroke:#16a34a,color:#14532d,stroke-width:2px;
-    classDef output fill:#ffedd5,stroke:#ea580c,color:#431407,stroke-width:2px;
-    class SENSOR kernel;
-    class ACQUIRE,PROCESS,ALERT,LOGGER thread;
-    class BUFFER,ALARMQ,LOGQ shared;
-    class TERMINAL,LOGFILE output;
+| Component | Function |
+|---|---|
+| Sensor Driver | Provides sensor readings through `/dev/sms_sensor` |
+| Sensor Thread | Collects sensor samples |
+| Circular Buffer | Stores up to 16 samples with synchronized access |
+| Processor Thread | Processes sensor readings |
+| Alert Thread | Handles threshold alerts |
+| Logger Thread | Records monitoring events in `/sms.log` |
+
+POSIX message queues provide communication between the Processor, Alert, and Logger threads.
+
+## Repository Materials
+
+```text
+Assignment02/
+├── driver/
+│   ├── sms_sensor.c
+│   └── Makefile
+├── include/
+│   └── sms_ioctl.h
+├── src/
+│   └── sms_app.c
+├── tests/
+│   ├── ioctl_test.c
+│   ├── valgrind/
+│   ├── strace/
+│   └── perf/
+├── qemu_rootfs/
+├── images/
+│   └── asm2_block_diagram.png
+├── report/
+├── initramfs_asgn2.cpio.gz
+└── README.md
 ```
 
-This diagram presents the coursework design: four worker threads exchange samples, events and log records through a shared buffer and message queues. It is an architectural overview; implementation-specific behavior and measurements belong in the group's source, report and recorded tests.
+The `report/` directory is intended for the group's final documentation. Generated binaries and additional testing files may vary.
 
-### Technical Scope
+## Assignment Tasks
 
-| Task | Focus |
+| Task | Description |
 |---|---|
-| 1 – Application architecture | Sensor driver, four worker threads, circular buffer, message queues, runtime configuration, and orderly shutdown |
-| 2 – Memory and driver integration | Allocation lifecycle, process memory footprint, device IOCTL configuration, and driver statistics |
-| 3 – Debugging and profiling | GDB sessions, Valgrind analysis, system-call tracing, and CPU profiling |
-| 4 – Real-time analysis | Sampling interval, scheduling policy, latency/jitter measurements, and optimization discussion |
-| 5 – Report and demonstration | Architecture explanation, test evidence, technical report, and demonstration video |
+| Task 1 | Multithreaded Sensor Monitoring System |
+| Task 2 | IOCTL Interface and Memory Management |
+| Task 3 | Debugging and Performance Profiling |
+| Task 4 | Real-Time Scheduling and Jitter Measurement |
+| Task 5 | Documentation and Demonstration |
 
-### Data Flow and Review Focus
+### Task 1 — Sensor Monitoring
 
-The architecture uses a simulated sensor interface to acquire samples. A sensor
-thread places data in a synchronized circular buffer; a processor thread
-evaluates the samples and produces events; an alert thread handles threshold
-notifications; and a logger thread writes timestamped records to `/tmp/sms.log`.
-The packaged guest mounts `/tmp` in RAM; export logs before exiting QEMU if they must be retained.
+Implement four POSIX threads, a synchronized circular buffer, POSIX message queues, threshold alerts, logging, and graceful shutdown.
 
-The shared buffer and message queues connect these stages. The implementation
-review covers synchronization, memory ownership, queue handling, configuration,
-and orderly shutdown, together with the kernel/userspace interface.
+### Task 2 — IOCTL Interface
 
-Debugging, memory checks, profiling, and sampling-latency analysis complement
-the functional tests. Reported measurements should identify the workload,
-scheduling configuration, execution environment, and method used to obtain them.
-The diagram summarizes the coursework architecture rather than benchmark results.
+The driver supports four IOCTL operations:
+
+- `SMS_IOCTL_SET_CONFIG`
+- `SMS_IOCTL_GET_CONFIG`
+- `SMS_IOCTL_GET_STATS`
+- `SMS_IOCTL_RESET_STATS`
+
+### Task 3 — Debugging and Profiling
+
+Use GDB Multiarch, Valgrind, strace, and perf to inspect application behavior, detect memory errors, trace system calls, and evaluate performance.
+
+### Task 4 — Real-Time Scheduling
+
+Use `SCHED_FIFO` with the following thread priorities:
+
+| Thread | Priority |
+|---|---:|
+| Sensor | 80 |
+| Processor | 70 |
+| Alert | 60 |
+| Logger | 50 |
+
+The target sampling interval is **1000 ms**. Timing measurements are collected using `CLOCK_MONOTONIC`.
+
+### Task 5 — Documentation
+
+Prepare the final report, experimental evidence, screenshots, and project demonstration.
+
+## Build and Run
+
+### 1. Build Kernel Module
+
+Run from the assignment directory:
+
+```bash
+make -C /path/to/linux-5.15 \
+  M="$PWD/driver" \
+  ARCH=arm \
+  CROSS_COMPILE=arm-linux-gnueabihf- \
+  KCFLAGS="-march=armv7-a" \
+  modules
+```
+
+### 2. Compile ARM Application
+
+```bash
+arm-linux-gnueabihf-gcc \
+  -march=armv7-a \
+  -mfpu=vfpv3-d16 \
+  -mfloat-abi=hard \
+  -O2 -pthread -static \
+  src/sms_app.c \
+  -o sms_app_arm -lrt
+```
+
+### 3. Boot QEMU
+
+After preparing the kernel image, device tree, and initramfs:
+
+```bash
+qemu-system-arm \
+  -M vexpress-a9 \
+  -cpu cortex-a9 \
+  -m 256M \
+  -kernel /path/to/zImage \
+  -dtb /path/to/vexpress-v2p-ca9.dtb \
+  -initrd initramfs_asgn2.cpio.gz \
+  -append "console=ttyAMA0,115200 rdinit=/init" \
+  -nographic
+```
+
+### 4. Run Sensor Monitoring
+
+Inside QEMU:
+
+```bash
+insmod /lib/modules/5.15.0/extra/sms_sensor.ko
+/sms_app_arm
+```
+
+Press **Ctrl+C** to request graceful shutdown.
+
+## Testing and Verification
+
+| Test | Verification |
+|---|---|
+| Kernel Module | Driver loads and provides sensor data |
+| POSIX Threads | Four worker threads execute |
+| Circular Buffer | Synchronized producer-consumer operation |
+| Message Queues | Alert and logging communication |
+| IOCTL | Configuration and statistics operations |
+| GDB | Thread and variable inspection |
+| Valgrind | Memory error and leak analysis |
+| strace / perf | System-call and CPU profiling |
+| SCHED_FIFO | Real-time priority configuration |
+| Jitter | Sampling interval measurements |
+| Shutdown | Thread termination and queue cleanup |
+
+Recorded measurements may vary between QEMU runs and host environments.
+
+## Troubleshooting
+
+| Problem | Suggested Solution |
+|---|---|
+| Kernel module fails to load | Verify the module was built for the running ARM kernel |
+| `/dev/sms_sensor` missing | Check driver loading and device creation |
+| Message queue errors | Verify `/dev/mqueue` is mounted |
+| Scheduling permission denied | Check real-time scheduling permissions |
+| QEMU boot failure | Verify kernel, DTB, and initramfs paths |
+| README diagram missing | Check `images/asm2_block_diagram.png` |
+
+## Conclusion
+
+Assignment 02 demonstrates the development and evaluation of an Embedded Linux Sensor Monitoring System.
+
+The project integrates Linux kernel programming, POSIX multithreading, inter-process communication, debugging, performance profiling, and real-time scheduling.
 
 ### Available Materials
 
@@ -537,12 +653,7 @@ The diagram summarizes the coursework architecture rather than benchmark results
 - [Paired SCHED_OTHER/SCHED_FIFO jitter results](assignment02/logs/jitter_report.txt)
 - [Group-uploaded report](assignment02/report/bao_cao.pdf)
 
-The packaged image was boot-tested on QEMU with the matching assignment kernel.
-A 10-second smoke test processed 19 samples with zero buffer/queue drops and
-zero read errors, generated all three alert types, and completed normal shutdown.
-The longer recorded experiments are documented separately in the assignment guide.
-The native executable still requires a compatible sensor interface; native mock-input
-analysis uses the separate `host_test/` variant.
+
 
 ## Reports and Evidence
 
