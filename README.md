@@ -227,7 +227,7 @@ present selected outputs for easier review and are not separate test runs.
 **Lab:** 03 – Debugging and Performance Analysis  
 **Platform:** Ubuntu Linux (Host) / ARMv7 Cortex-A9 (QEMU Target)  
 **Language:** C  
-**Team:** [Group Name / Number]
+**Contributor:** Đinh Quang Ngọc
 
 ## 1. Overview
 
