@@ -1,243 +1,597 @@
-# Assignment 02 — Sensor Monitoring System
+# Assignment 02 – Embedded Linux Sensor Monitoring System
 
-**Course:** LOS201 — Embedded Linux Systems, FPT University  
-**Contributor:** Trần Thiên Phúc — SE203798  
-**Submission scope:** Practical implementation and execution evidence for Tasks 1–4
+**Student ID:** SE201573  
+**Project:** Embedded Linux – Assignment 02  
+**Operating System:** Ubuntu Linux  
+**Target Architecture:** ARMv7 (Cortex-A9)  
+**Emulator:** QEMU (vexpress-a9)  
+**Linux Kernel:** 5.15  
+**Programming Language:** C
 
-## Overview
+---
 
-This assignment implements a Sensor Monitoring System using a simulated Linux
-sensor driver and a multithreaded C application. The work combines device access,
-synchronized data buffering, POSIX message queues, threshold alerts, file logging,
-memory analysis, debugging, profiling, and scheduling-jitter measurements.
+## 1. Project Overview
 
-The embedded experiments use ARMv7-A / Cortex-A9 on QEMU `vexpress-a9`.
-Separate host-side sources support analysis on Ubuntu x86_64. The execution
-environment matters when interpreting each log and measurement.
+This project implements an Embedded Linux Sensor Monitoring System using a custom Linux Kernel Driver and a multithreaded userspace application.
 
-## Task Coverage
+The system simulates sensor readings, processes collected data, generates alerts when predefined thresholds are exceeded, and records monitoring information in a log file.
 
-| Task | Work covered |
+The project demonstrates:
+
+- Linux Kernel Module development
+- Character device communication
+- POSIX Multithreading
+- Mutexes and Condition Variables
+- Circular Buffer synchronization
+- POSIX Message Queues
+- IOCTL-based device configuration
+- Memory management and debugging
+- System call tracing and performance profiling
+- Real-Time Scheduling
+- Sampling Interval and Jitter Measurement
+
+The system is developed on Ubuntu and tested using QEMU ARM emulation.
+
+---
+
+## 2. System Architecture
+
+The system consists of a Linux Kernel Driver and four POSIX threads running in userspace.
+
+**Data Flow:**
+
+```text
+             Linux Kernel
+                  |
+           SMS Sensor Driver
+           /dev/sms_sensor
+                  |
+                  v
+            Sensor Thread
+                  |
+                  v
+          Circular Buffer
+           (16 Elements)
+                  |
+                  v
+           Processor Thread
+               /     \
+              /       \
+             v         v
+        Alert Queue   Log Queue
+             |           |
+             v           v
+        Alert Thread  Logger Thread
+                         |
+                         v
+                      /sms.log
+```
+
+### Thread Responsibilities
+
+| Thread | Description |
 |---|---|
-| 1 — Application architecture | Sensor driver; sensor, processor, alert and logger threads; circular buffer; message queues; runtime options; orderly shutdown |
-| 2 — Memory and driver integration | Allocation and cleanup, process-memory inspection, sensor IOCTL configuration and procfs statistics |
-| 3 — Debugging and profiling | GDB sessions, Valgrind memory checks, strace analysis and perf profiling |
-| 4 — Scheduling and timing | Periodic sampling, SCHED_OTHER / SCHED_FIFO comparison and jitter statistics |
+| Sensor Thread | Reads sensor values from the kernel driver |
+| Processor Thread | Processes sensor samples and generates monitoring messages |
+| Alert Thread | Handles sensor threshold alerts |
+| Logger Thread | Writes monitoring information into the log file |
 
-This directory documents Tasks 1–4. A Task 5 report or demonstration video is
-outside the scope of this upload.
+The threads communicate using a synchronized circular buffer and POSIX message queues.
 
-## Repository Materials
+---
 
-| Location | Contents |
+## 3. Project Structure
+
+```text
+SE201573_DinhQuangNgoc_Asgn02/
+|
+|-- driver/
+|   |-- sms_sensor.c
+|   |-- Makefile
+|   |-- sms_sensor.ko
+|
+|-- include/
+|   |-- sms_ioctl.h
+|
+|-- src/
+|   |-- sms_app.c
+|   |-- sms_app_task3_backup.c
+|
+|-- tests/
+|   |-- ioctl_test.c
+|   |-- valgrind/
+|   |-- strace/
+|   |-- perf/
+|
+|-- qemu_rootfs/
+|   |-- init
+|   |-- sms_app_arm
+|   |-- sms_app_task4_arm
+|   |-- ioctl_test_arm
+|   |-- lib/modules/5.15.0/extra/
+|
+|-- sms_app_arm
+|-- sms_app_debug_arm
+|-- sms_app_task4_arm
+|-- ioctl_test_arm
+|-- initramfs_asgn2.cpio.gz
+```
+
+The Linux kernel source used for this project is located separately at:
+
+```text
+~/embedded_lab1/kernel/linux-5.15
+```
+
+---
+
+## 4. Task 1 – Sensor Monitoring System
+
+### Objective
+
+Develop a multithreaded sensor monitoring application that communicates with a custom Linux Kernel Driver.
+
+### Implementation
+
+The system includes:
+
+- A custom kernel sensor device `/dev/sms_sensor`
+- Four POSIX threads
+- A circular buffer with 16 elements
+- Mutex-based synchronization
+- Condition variables for producer-consumer communication
+- POSIX Message Queues
+- Sensor threshold detection
+- Logging functionality
+- Graceful shutdown handling
+
+### Sensor Configuration
+
+```c
+#define BUFFER_SIZE 16
+#define ALERT_THRESHOLD 40
+#define SAMPLE_INTERVAL_MS 1000
+```
+
+Sensor values are generated by the kernel driver and read through the device interface.
+
+When a sensor value reaches or exceeds the threshold, the application generates an alert.
+
+### Graceful Shutdown
+
+The application supports termination through:
+
+```text
+SIGINT
+SIGTERM
+```
+
+During shutdown, the application:
+
+1. Stops sensor sampling.
+2. Wakes threads waiting on the circular buffer.
+3. Waits for Sensor and Processor threads to finish.
+4. Sends termination messages to Alert and Logger threads.
+5. Joins all worker threads.
+6. Closes and removes POSIX message queues.
+
+**Result:** The application successfully starts and terminates all four threads during the tested scenarios.
+
+---
+
+## 5. Task 2 – IOCTL and Memory Management
+
+### Objective
+
+Implement device configuration and statistics management through IOCTL commands.
+
+### IOCTL Commands
+
+| Command | Function |
 |---|---|
-| [app/](app/) | Embedded application sources, headers and ARM/native Makefile |
-| [driver/](driver/) | Simulated sensor driver, shared IOCTL header, Makefile and compiled ARM module |
-| [host_test/](host_test/) | Source variant used for host-side execution and analysis |
-| [configs/kernel.config](configs/kernel.config) | Saved kernel configuration from the assignment workspace |
-| [rootfs/](rootfs/) | Selected guest initialization files |
-| [logs/](logs/) | Recorded runtime, debugging, memory, profiling and timing evidence |
+| SMS_IOCTL_SET_CONFIG | Configure sensor minimum and maximum values |
+| SMS_IOCTL_GET_CONFIG | Retrieve current sensor configuration |
+| SMS_IOCTL_GET_STATS | Retrieve sensor statistics |
+| SMS_IOCTL_RESET_STATS | Reset sensor statistics |
 
-The selected root filesystem files are an overlay for an existing ARM BusyBox
-environment. This directory does not contain a complete root filesystem,
-upstream kernel source tree, ready-to-boot initramfs or application binaries.
-The application binaries are generated by the build commands below; the
-compiled driver module is supplied as a recorded build artifact.
+### Driver Statistics
 
-## Architecture and Interfaces
+The driver maintains:
 
-| Component | Responsibility |
+- Last generated sensor value
+- Total number of samples generated
+
+### Validation
+
+The driver rejects invalid configurations where the minimum sensor value is greater than the maximum value.
+
+The following operations were tested successfully:
+
+- Reading the default configuration
+- Updating the sensor range
+- Reading generated sensor values
+- Retrieving sample statistics
+- Resetting statistics
+- Rejecting invalid configurations
+- Unloading and reloading the kernel module
+
+### Memory Inspection
+
+Memory usage was inspected using Linux `/proc` interfaces, including:
+
+```text
+/proc/PID/status
+/proc/PID/statm
+/proc/PID/smaps_rollup
+/proc/modules
+```
+
+The kernel module was reported as approximately 16 KiB by `/proc/modules` during testing.
+
+---
+
+## 6. Task 3 – Debugging and Performance Profiling
+
+### Objective
+
+Analyze application behavior, memory usage, system calls, and performance.
+
+### 6.1 GDB Multiarch
+
+GDB Multiarch was used to debug the ARM application running inside QEMU.
+
+The following functions were inspected:
+
+```c
+sensor_thread()
+processor_thread()
+alert_thread()
+logger_thread()
+```
+
+Debugging operations included:
+
+- Setting breakpoints
+- Inspecting POSIX threads
+- Viewing function call stacks
+- Examining local and global variables
+- Inspecting the circular buffer
+
+The circular buffer was verified with:
+
+```text
+BUFFER_SIZE = 16
+count = 0
+head = 15
+tail = 15
+```
+
+These values represent a valid empty-buffer state at the observed breakpoint.
+
+### 6.2 Valgrind
+
+Valgrind Memcheck was used to detect memory leaks and invalid memory accesses.
+
+A native Ubuntu x86-64 test build was used with a mock sensor input.
+
+**Recorded Results:**
+
+```text
+ERROR SUMMARY: 0 errors from 0 contexts
+
+in use at exit: 0 bytes in 0 blocks
+```
+
+No memory errors or remaining allocated blocks were reported during this test.
+
+### 6.3 strace
+
+The strace tool was used to monitor Linux system calls.
+
+Observed system calls included:
+
+```text
+openat()
+read()
+write()
+clone3()
+futex()
+mq_open()
+mq_timedsend()
+mq_timedreceive()
+```
+
+The system call summary recorded 354 calls in the tested execution.
+
+### 6.4 perf
+
+Linux perf was used to collect software performance counters.
+
+**Recorded Results:**
+
+| Metric | Value |
+|---|---:|
+| Task-clock | 3.39 ms |
+| Context Switches | 84 |
+| CPU Migrations | 12 |
+| Page Faults | 78 |
+| Elapsed Time | 19.0047 seconds |
+
+These performance measurements were collected from the Ubuntu host-native test version, not directly from the ARM guest.
+
+---
+
+## 7. Task 4 – Real-Time Scheduling
+
+### Objective
+
+Implement real-time scheduling and measure sensor sampling timing behavior.
+
+### Scheduling Policy
+
+The application requests the Linux `SCHED_FIFO` real-time scheduling policy.
+
+### Thread Priorities
+
+| Thread | Scheduling Policy | Priority |
+|---|---|---:|
+| Sensor Thread | SCHED_FIFO | 80 |
+| Processor Thread | SCHED_FIFO | 70 |
+| Alert Thread | SCHED_FIFO | 60 |
+| Logger Thread | SCHED_FIFO | 50 |
+
+Higher priority values indicate higher scheduling priority under SCHED_FIFO.
+
+The application includes fallback handling when real-time scheduling cannot be enabled.
+
+### Sampling Interval
+
+The target sampling interval is:
+
+```text
+1000 ms
+```
+
+### Timing Measurement
+
+The application uses:
+
+```c
+clock_gettime(CLOCK_MONOTONIC, ...)
+```
+
+to measure actual sampling intervals.
+
+Jitter is calculated as the absolute deviation of each measured interval from the target interval.
+
+### Recorded QEMU Results
+
+| Metric | Result |
+|---|---:|
+| Target Interval | 1000 ms |
+| Minimum Interval | 1003.914 ms |
+| Maximum Interval | 1009.532 ms |
+| Average Jitter | 4.859 ms |
+| Total Intervals | 59 |
+
+These results demonstrate the measured timing behavior during one QEMU execution. Results may vary depending on host load and emulator conditions.
+
+---
+
+## 8. Build Instructions
+
+### Requirements
+
+The development environment requires:
+
+- Ubuntu Linux
+- GCC
+- ARM GNU Cross-Compiler
+- Linux Kernel 5.15 source and build environment
+- QEMU System ARM
+- Make
+- CPIO
+- Gzip
+
+Optional debugging tools:
+
+- GDB Multiarch
+- Valgrind
+- strace
+- perf
+
+### 8.1 Build Kernel Module
+
+Open Terminal:
+
+```bash
+cd ~/SE201573_DinhQuangNgoc_Asgn02
+```
+
+Compile the kernel module:
+
+```bash
+make -C ~/embedded_lab1/kernel/linux-5.15 \
+  M="$PWD/driver" \
+  ARCH=arm \
+  CROSS_COMPILE=arm-linux-gnueabihf- \
+  KCFLAGS="-march=armv7-a" \
+  modules
+```
+
+### 8.2 Compile ARM Application
+
+```bash
+arm-linux-gnueabihf-gcc \
+  -march=armv7-a \
+  -mfpu=vfpv3-d16 \
+  -mfloat-abi=hard \
+  -O2 -Wall -Wextra \
+  -pthread -static \
+  src/sms_app.c \
+  -o sms_app_task4_arm \
+  -lrt
+```
+
+### 8.3 Copy Files into RootFS
+
+```bash
+cp sms_app_task4_arm qemu_rootfs/
+```
+
+```bash
+cp driver/sms_sensor.ko \
+  qemu_rootfs/lib/modules/5.15.0/extra/
+```
+
+### 8.4 Rebuild Initramfs
+
+```bash
+cd ~/SE201573_DinhQuangNgoc_Asgn02/qemu_rootfs
+```
+
+```bash
+find . -print0 | cpio --null -o -H newc | gzip -9 \
+  > ../initramfs_asgn2.cpio.gz
+```
+
+---
+
+## 9. Running the Application on QEMU
+
+### 9.1 Start QEMU
+
+```bash
+qemu-system-arm \
+  -M vexpress-a9 \
+  -cpu cortex-a9 \
+  -m 256M \
+  -kernel ~/embedded_lab1/kernel/linux-5.15/arch/arm/boot/zImage \
+  -dtb ~/embedded_lab1/kernel/linux-5.15/arch/arm/boot/dts/vexpress-v2p-ca9.dtb \
+  -initrd ~/SE201573_DinhQuangNgoc_Asgn02/initramfs_asgn2.cpio.gz \
+  -append "console=ttyAMA0,115200 rdinit=/init loglevel=8" \
+  -nographic
+```
+
+### 9.2 Load Sensor Driver
+
+Inside QEMU:
+
+```bash
+insmod /lib/modules/5.15.0/extra/sms_sensor.ko
+```
+
+Verify the sensor device:
+
+```bash
+ls -l /dev/sms_sensor
+```
+
+### 9.3 Mount POSIX Message Queue Filesystem
+
+```bash
+mkdir -p /dev/mqueue
+```
+
+```bash
+mount -t mqueue none /dev/mqueue
+```
+
+### 9.4 Run Sensor Monitoring System
+
+```bash
+/sms_app_task4_arm
+```
+
+The application will display:
+
+- Sensor values
+- Processed sensor information
+- Alert messages
+- Logger messages
+- Real-time scheduling status
+- Sampling interval and jitter measurements
+
+### 9.5 Stop the Application
+
+Press:
+
+```text
+Ctrl + C
+```
+
+Expected shutdown messages:
+
+```text
+[SYSTEM] Shutdown requested
+[SYSTEM] All threads stopped
+```
+
+### 9.6 Verify Message Queue Cleanup
+
+```bash
+ls -la /dev/mqueue
+```
+
+The application's message queues should be removed after successful shutdown.
+
+### 9.7 Exit QEMU
+
+Press:
+
+```text
+Ctrl + A
+X
+```
+
+---
+
+## 10. Testing Summary
+
+| Test | Status |
 |---|---|
-| Simulated sensor driver | Expose temperature/humidity samples through `/dev/sms_sensor` |
-| Sensor thread | Acquire samples periodically and place them in the circular buffer |
-| Processor thread | Consume samples, evaluate values and produce log records and alarm events |
-| Alert thread | Handle alarm events and forward alert records for logging |
-| Logger thread | Write records to a log file and manage flushing/rotation |
-| Circular buffer | Coordinate sample transfer between the sensor and processor threads |
-| POSIX message queues | Transfer alarm events and log messages between threads |
+| Kernel Module Compilation | PASS |
+| Sensor Device Communication | PASS |
+| POSIX Thread Execution | PASS |
+| Circular Buffer Synchronization | PASS |
+| POSIX Message Queues | PASS |
+| Alert and Logging Functions | PASS |
+| IOCTL Configuration | PASS |
+| IOCTL Statistics | PASS |
+| Graceful Shutdown | PASS |
+| GDB Debugging | PASS |
+| Valgrind Memcheck | PASS |
+| strace System Call Analysis | PASS |
+| perf Performance Profiling | PASS |
+| SCHED_FIFO Scheduling | PASS |
+| Sampling Interval Measurement | PASS |
+| Jitter Measurement | PASS |
+| Message Queue Cleanup | PASS |
 
-The driver returns CSV samples containing a timestamp, temperature and humidity.
-The shared header defines `SMS_SET_INTERVAL`, which configures the minimum
-sensor interval through IOCTL. `/proc/sms_stats` exposes statistics including
-read count, recent readings, driver uptime and the configured interval.
+---
 
-The application coordinates thread termination, drains pending work and releases
-allocated memory and message-queue resources during shutdown.
+## 11. Important Notes
 
-## Platform and Prerequisites
+1. The system was tested using QEMU ARM emulation rather than physical ARM hardware.
+2. Timing and jitter measurements may differ on real hardware.
+3. Valgrind, strace, and perf tests were performed using a host-native application variant with a simulated sensor.
+4. The project depends on the Linux 5.15 kernel build stored in the separate `embedded_lab1` directory.
+5. The project contains multiple application versions and backups created during development.
+6. The final Task 4 executable is `sms_app_task4_arm`.
+7. Report preparation, presentation slides, and final submission verification are separate group responsibilities.
 
-| Component | Environment |
-|---|---|
-| Development and analysis host | Ubuntu Linux, x86_64 |
-| Embedded target | ARMv7-A / Cortex-A9 |
-| Emulated board | QEMU `vexpress-a9` |
-| Guest kernel | Linux 5.15-based assignment build |
-| ARM toolchain prefix | `arm-linux-gnueabihf-` |
-| Language and threading | C11 and POSIX threads |
-| Communication | POSIX message queues |
-| Analysis tools | GDB, Valgrind, strace and perf |
+---
 
-Prepare the ARM build environment using the [LAB01 guide](../lab01/README.md).
-The assignment kernel must provide the facilities used by this application,
-including POSIX message queues. The saved configuration records the assignment
-kernel choices; LAB01 boot images alone do not include this assignment.
+## 12. Project Status
 
-## Build on Ubuntu
+**Task 1:** Completed – Sensor Monitoring System
 
-Run the following commands from this directory (`assignment02/`).
+**Task 2:** Completed – IOCTL and Memory Management
 
-### ARM application
+**Task 3:** Completed – Debugging and Profiling
 
-```bash
-make -C app arm
-file app/build/sms_app_arm
-```
+**Task 4:** Completed – Real-Time Scheduling and Jitter Measurement
 
-This produces a statically linked ARM executable at `app/build/sms_app_arm`.
+**Task 5:** Report and Demonstration – Group Responsibility
 
-### Native build of the embedded application
-
-```bash
-make -C app host
-file app/build/sms_app_x86
-```
-
-The native build changes the CPU architecture of the executable. It still
-contains the embedded application's device-access logic; compiling it for x86_64
-does not by itself provide a simulated sensor on the host.
-
-### ARM kernel module
-
-Set `KDIR` to the configured and built ARM kernel tree corresponding to the
-kernel booted in QEMU. The author's local workspace uses this example:
-
-```bash
-make -C driver arm KDIR="$HOME/LOS201/asgn02/kernel"
-file driver/sms_sensor_driver.ko
-modinfo driver/sms_sensor_driver.ko
-```
-
-Adjust `KDIR` for another computer. The module must match the target architecture
-and guest kernel build. Host x86_64 kernel headers cannot build a module for the
-ARM guest. The checked-in `.ko` is not compatible with every Linux 5.15 build.
-
-### Host-side analysis variant
-
-Build the host-analysis sources separately from the embedded application:
-
-```bash
-gcc -std=c11 -O2 -g -Wall -Wextra -Ihost_test \
-  host_test/*.c -o host_test/sms_app_host -pthread -lrt -lm
-```
-
-The files in `host_test/` are the host-analysis variant. Refer to their sensor
-implementation when interpreting host measurements; these runs do not validate
-the ARM kernel module.
-
-## ARM Execution
-
-Build the application and module, install them in a prepared ARM BusyBox root
-filesystem, apply the initialization overlay as appropriate, and package the
-guest filesystem using the LAB01 initramfs procedure. Boot it with the matching
-assignment kernel and board DTB. Retain the guest device nodes and runtime
-facilities needed by BusyBox, the module and POSIX message queues.
-
-Inside the guest, check module loading, `/dev/sms_sensor`, `/proc/sms_stats` and
-the availability of the application. If startup already loaded the module,
-inspect its state before attempting another insertion.
-
-The application accepts the following options:
-
-| Option | Meaning |
-|---|---|
-| `-i milliseconds` | Sampling interval |
-| `-t degrees_C` | Temperature alert threshold |
-| `-h percent` | Humidity alert threshold |
-| `-d seconds` | Run duration; `0` runs until interrupted |
-| `-v` | Print sensor samples |
-| `-r` | Request SCHED_FIFO for the sensor thread |
-
-For example, if the ARM executable is installed at `/usr/bin/sms_app_arm`, run
-the following **inside QEMU**:
-
-```sh
-cat /proc/sms_stats
-/usr/bin/sms_app_arm -i 500 -t 40 -h 80 -d 10 -v
-cat /proc/sms_stats
-```
-
-For the scheduling experiment, add `-r` and verify the reported policy rather
-than assuming that the request succeeded. The process needs the appropriate
-privileges and resource limits. Run one SMS instance at a time because the
-application uses shared message-queue names and a common runtime log path.
-
-## Debugging and Host Analysis
-
-The following examples run on Ubuntu using the separately built host variant:
-
-```bash
-valgrind --leak-check=full --show-leak-kinds=all \
-  --track-origins=yes ./host_test/sms_app_host -i 500 -d 10
-```
-
-```bash
-strace -f -c ./host_test/sms_app_host -i 500 -d 10
-```
-
-```bash
-sudo perf stat ./host_test/sms_app_host -i 500 -d 10
-```
-
-Host permissions and perf availability may require environment-specific setup.
-The recorded GDB transcripts document breakpoint and variable-inspection sessions.
-
-## Execution Evidence
-
-| Evidence | Purpose |
-|---|---|
-| [GDB session](logs/gdb_current_session.txt) | Recorded debugging observations |
-| [Host execution](logs/host_current_run.txt) | Host-side runtime summary and shutdown |
-| [Valgrind output](logs/valgrind_current_host.txt) | Host memory-analysis results |
-| [System-call summary](logs/strace_sms.txt) | Recorded strace statistics |
-| [CPU profiling output](logs/perf_sms.txt) | Recorded perf output |
-| [Memory run](logs/memory_run.log) | Runtime and process-memory investigation |
-| [Process memory map](logs/sms_maps.txt) | Recorded process mappings |
-| [Driver statistics before](logs/proc_sms_stats_before.txt) / [after](logs/proc_sms_stats_after.txt) | Driver state around the recorded experiment |
-| [SCHED_OTHER run](logs/jitter_other_1000.log) | Standard-policy timing experiment |
-| [SCHED_FIFO run](logs/jitter_fifo_1000.log) | Requested real-time-policy timing experiment |
-| [Jitter comparison](logs/jitter_report.txt) | Summary of the two recorded timing runs |
-| [Missing sensor test](logs/missing_sensor_test.txt) | Device-unavailable behavior and shutdown |
-
-The recorded host Valgrind session reports **0 bytes in use at exit** and
-**0 errors** for that run. This is evidence for the tested host configuration,
-not a blanket statement about every execution path or ARM memory behavior.
-
-### Recorded Timing Comparison
-
-The comparison log identifies QEMU `vexpress-a9`, a 100 ms interval and a
-105-second duration for each recorded run:
-
-| Policy | Samples | Minimum (µs) | Average (µs) | Maximum (µs) | P99 (µs) |
-|---|---:|---:|---:|---:|---:|
-| SCHED_OTHER | 1,050 | 233 | 609.55 | 1,359 | 974 |
-| SCHED_FIFO | 1,050 | 359 | 626.44 | 1,133 | 971 |
-
-SCHED_FIFO had a lower maximum in these recorded runs, while its average was
-higher. The data does not show improvement in every metric. These measurements
-describe application timing under QEMU; they are not physical-board latency
-guarantees or a measured comparison of standard and PREEMPT_RT kernels.
-
-Recorded logs can refer to local workspace names and earlier experiment
-executables. Keep their original context when comparing runs. File names
-containing `previous` identify retained earlier evidence.
-
-## References
-
-- Lecturer-provided Assignment 02 specification.
-- [LAB01 ARM build environment](../lab01/README.md).
-- [Linux kernel documentation](https://docs.kernel.org/).
-- [Linux man-pages](https://www.kernel.org/doc/man-pages/).
-- [Valgrind manual](https://valgrind.org/docs/manual/manual.html).
-- [Peer coursework reference](https://github.com/baohoang037/FPTU-LOS201/tree/main/assignment02_sensor_monitoring).
-
-[Back to the group overview](../README.md)
+**Overall Status:** The main implementation and technical testing of Assignment 02 have been completed in the recorded development environment.
