@@ -227,7 +227,7 @@ present selected outputs for easier review and are not separate test runs.
 **Lab:** 03 – Debugging and Performance Analysis  
 **Platform:** Ubuntu Linux (Host) / ARMv7 Cortex-A9 (QEMU Target)  
 **Language:** C  
-**Contributor:** Đinh Quang Ngọc
+**Team:** [Group Name / Number]
 
 ## 1. Overview
 
@@ -237,29 +237,8 @@ The main tools are **GDB Multiarch, Valgrind, strace, perf, and cyclictest**.
 
 ## 2. System Architecture
 
-```text
-+--------------------------------------------+
-|          HOST: Ubuntu Linux (x86_64)       |
-|                                            |
-|  +-------------+    +-------------------+  |
-|  | GDB Multiarch|   | Valgrind / strace |  |
-|  | Remote Debug |   | perf / cyclictest |  |
-|  +------+------+    +-------------------+  |
-|         |                                  |
-+---------|----------------------------------+
-          | TCP Remote Debugging
-          | Port 1234
-          v
-+--------------------------------------------+
-|       TARGET: QEMU ARM Cortex-A9           |
-|                                            |
-|        Linux Kernel + RootFS               |
-|                  |                         |
-|           gdbserver :1234                  |
-|                  |                         |
-|             buggy_app                      |
-+--------------------------------------------+
-```
+<img width="1312" height="1199" alt="image" src="https://github.com/user-attachments/assets/dcfc6eb7-ebce-4124-bdbb-6c517c0da4a5" />
+
 
 Host-native analysis tools run on Ubuntu; ARM application debugging uses the QEMU target.
 
@@ -390,7 +369,6 @@ Commands must be executed in the appropriate host or target environment. Remote 
 Lab 03 demonstrates essential techniques for debugging and evaluating Embedded Linux applications. The experiments help identify software defects, detect memory problems, investigate performance bottlenecks, and evaluate scheduling latency.
 
 The collected logs and measurements provide evidence for the group's technical report.
-## Assignment 1 – How to Write a Device Driver
 
 **Contributor:** Nguyễn Huy Hoàng.
 
