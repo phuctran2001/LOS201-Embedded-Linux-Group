@@ -120,8 +120,8 @@ lab03/
 |-- output/
 |   `-- initramfs_lab3.cpio.gz
 |
-`-- baocao/
-    `-- SE201573_Lab03_BaoCao.pdf
+`-- report/
+    `-- SE201573_DinhQuangNgoc_Lab03_report.pdf
 ```
 
 ### 3.1. Application Files
@@ -156,7 +156,7 @@ The logs provide evidence for:
 
 The `output/` directory stores the ARM initramfs image.
 
-The `baocao/` directory is reserved for the final laboratory report in PDF format.
+The `report/` directory is reserved for the final laboratory report in PDF format.
 
 ---
 
