@@ -1,5 +1,5 @@
 # LAB03 — Debugging and Performance Analysis
-
+**Contributor:** Đinh Quang Ngọc 
 **Course:** LOS201 — Embedded Linux Systems, FPT University  
 **Platform:** Ubuntu Linux (x86-64) / ARM Cortex-A9 (QEMU)  
 **Language:** C  
