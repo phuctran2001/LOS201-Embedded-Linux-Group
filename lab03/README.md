@@ -60,7 +60,6 @@ GDB Multiarch connects to `gdbserver` on the ARM target for remote debugging. Va
 | `apps/` | C source code and executable programs |
 | `logs/` | Debugging and performance analysis results |
 | `output/` | ARM initramfs and generated artifacts |
-| `images/` | System architecture block diagram |
 | `report/` | Lab report and experimental evidence |
 | `README.md` | Project documentation |
 
@@ -84,8 +83,6 @@ lab03/
 │   └── hist_standard.txt
 ├── output/
 │   └── initramfs_lab3.cpio.gz
-├── images/
-│   └── lab03_block_diagram.png
 ├── report/
 │   └── SE201573_DinhQuangNgoc_Lab03_Report.pdf
 └── README.md
