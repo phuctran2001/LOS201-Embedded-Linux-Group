@@ -303,8 +303,8 @@ lab03/
 │   └── hist_standard.txt
 ├── output/
 │   └── initramfs_lab3.cpio.gz
-├── baocao/
-│   └── Lab03_Report.pdf
+├── report/
+│   └── SE201573_DinhQuangNgoc_Lab03_Report.pdf
 └── README.md
 ```
 
