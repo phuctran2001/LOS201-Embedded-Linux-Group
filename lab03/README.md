@@ -151,33 +151,7 @@ gcc -g -O2 \
 
 **Objective:** Identify and fix programming errors using GDB.
 
-The ARM application runs inside QEMU, while GDB Multiarch operates on the Ubuntu host.
 
-On the ARM target:
-
-```bash
-gdbserver :1234 ./buggy_app
-```
-
-On the Ubuntu host:
-
-```bash
-gdb-multiarch ./apps/buggy_app
-```
-
-Inside GDB:
-
-```gdb
-target remote :1234
-break main
-continue
-info locals
-backtrace
-```
-
-The remote connection requires the correct QEMU network or port-forwarding configuration.
-
-**Analysis:** Inspect variables, breakpoints, and call stacks to identify defects such as array out-of-bounds access, use-after-free, and integer overflow.
 
 
 #### Remote Debugging Verification
@@ -205,7 +179,7 @@ The host executable and the executable packaged in the QEMU initramfs were verif
 
 **Verification Log:** [GDB Remote Debugging Verification](logs/gdb_verification.txt)
 
-The original debugging log is preserved separately as evidence of the initial debugging process.
+The original debugging log documents the initial debugging attempts, including warnings encountered before the environment was corrected. The separate verification log records the successful remote debugging session using matching host and guest executables.
 
 
 #### Reproducing the Remote Debugging Experiment
@@ -227,43 +201,28 @@ qemu-system-arm \
   -device virtio-net-device,netdev=net0
 ```
 
-Inside the ARM guest, configure the network interface:
+Inside the ARM guest, enable the network interface and request an IPv4 address:
 
 ```sh
 ip link set eth0 up
 udhcpc -i eth0
-ip addr show eth0
+ip -4 addr show eth0
 ```
 
-If DHCP does not assign the acquired IPv4 address to the interface, verify the existing addresses and configure the guest network accordingly.
+If DHCP reports an address lease but the interface has no IPv4 address, configure the address manually for the QEMU user-mode network used in this experiment:
+
+```sh
+ip addr add 10.0.2.15/24 dev eth0
+ip -4 addr show eth0
+```
+
+Do not add the address again if it is already configured.
 
 Start gdbserver inside the ARM guest:
 
 ```sh
 gdbserver 0.0.0.0:1234 /usr/bin/buggy_app
 ```
-
-On the Ubuntu host, open a second terminal:
-
-```bash
-cd lab03
-gdb-multiarch -q ./apps/buggy_app
-```
-
-Execute the following commands inside GDB:
-
-```gdb
-set pagination off
-set remotetimeout 10
-target remote 127.0.0.1:1234
-break main
-continue
-list
-backtrace
-info locals
-```
-
-The executable loaded by GDB must match the executable running inside the ARM guest.
 
 
 ### Part B — Memory Analysis with Valgrind
@@ -344,22 +303,23 @@ Measurements may vary depending on CPU load, kernel configuration, and host envi
 
 Detailed experimental outputs should be checked in the `logs/` directory and the [Lab 03 Report](report/SE201573_DinhQuangNgoc_Lab03_Report.pdf).
 
-
 ### Experimental Evidence
 
-The experiments were conducted to evaluate debugging techniques, memory management, system call behavior, CPU performance, and scheduling latency.
+The experimental evidence is organized in the `logs/` directory. Original debugging records are preserved alongside the successful verification results.
 
-The collected experimental evidence is organized in the `logs/` directory.
-
-| Experiment | Evidence File | Description |
+| Experiment | Evidence | Description |
 |---|---|---|
-| GDB Remote Debugging | `logs/gdb_session.txt` | Breakpoints, variables, and debugging results |
-| Valgrind Memory Analysis | `logs/valgrind_report.txt` | Memory leak detection before correction |
-| Memory Leak Verification | `logs/valgrind_fixed.txt` | Memory analysis after correction |
-| System Call Analysis | `logs/strace_summary.txt` | System call statistics |
-| CPU Performance Analysis | `logs/perf_stat.txt` | CPU performance measurements |
-| CPU Profiling | `logs/perf_report.txt` | Function-level profiling results |
-| Real-Time Latency Analysis | `logs/hist_standard.txt` | Scheduling latency histogram and statistics |
+| GDB Remote Debugging | [Original Session](logs/gdb_session.txt) | Initial debugging session and encountered warnings |
+| GDB Verification | [Verification Log](logs/gdb_verification.txt) | Successful remote connection, breakpoint, source inspection, and stack inspection |
+| Valgrind Memory Analysis | [Original Report](logs/valgrind_report.txt) | Memory leak detection |
+| Memory Leak Verification | [Corrected Report](logs/valgrind_fixed.txt) | Memory analysis after correction |
+| System Call Analysis | [strace Summary](logs/strace_summary.txt) | System call statistics |
+| CPU Performance | [perf Statistics](logs/perf_stat.txt) | CPU performance measurements |
+| CPU Profiling | [perf Report](logs/perf_report.txt) | Function-level profiling results |
+| Normal Latency Test | [Normal Log](logs/cyclictest_normal.txt) | Baseline cyclictest measurements |
+| Loaded Latency Test | [Under-Load Log](logs/cyclictest_under_load.txt) | Scheduling latency under additional workload |
+| Test Environment | [Environment Log](logs/cyclictest_environment.txt) | Experimental environment information |
+| Load Configuration | [Load Generator Log](logs/cyclictest_load_generator.txt) | Additional workload configuration |
 
 ### Experimental Environment
 
@@ -432,16 +392,6 @@ The horizontal axis represents scheduling latency in microseconds, while the ver
 The maximum observed latency was 14 microseconds during normal operation and 12 microseconds under additional CPU load.
 
 The difference does not necessarily indicate better real-time performance under load. Repeated measurements are required to assess consistency.
-
-
-### Experimental Evidence
-
-- [Normal Operation Log](logs/cyclictest_normal.txt)
-- [Under Load Log](logs/cyclictest_under_load.txt)
-- [Test Environment](logs/cyclictest_environment.txt)
-- [CPU Load Configuration](logs/cyclictest_load_generator.txt)
-
-The recorded latency histograms are included in the corresponding cyclictest log files.
 
 
 ## Troubleshooting
