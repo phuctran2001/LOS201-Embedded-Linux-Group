@@ -321,25 +321,22 @@ The experimental evidence is organized in the `logs/` directory. Original debugg
 | Test Environment | [Environment Log](logs/cyclictest_environment.txt) | Experimental environment information |
 | Load Configuration | [Load Generator Log](logs/cyclictest_load_generator.txt) | Additional workload configuration |
 
+
 ### Experimental Environment
 
-The laboratory experiments use an Ubuntu Linux development host and an ARM Cortex-A9 target emulated using QEMU.
+The experiments were conducted using the Ubuntu development host and ARM target described in the [Platform](#platform) section.
 
-| Component | Configuration |
-|---|---|
-| Development Host | Ubuntu Linux (x86-64) |
-| Target Architecture | ARMv7-A |
-| Target Processor | ARM Cortex-A9 |
-| Emulator | QEMU |
-| Target Machine | `vexpress-a9` |
-| Cross Compiler | `arm-linux-gnueabihf-gcc` |
-| Debugger | GDB Multiarch and gdbserver |
-| Memory Analysis Tool | Valgrind |
-| System Call Analysis Tool | strace |
-| CPU Profiling Tool | perf |
-| Latency Measurement Tool | cyclictest |
+Remote debugging was performed using QEMU with the `vexpress-a9` machine and an ARM Cortex-A9 processor.
 
-The exact kernel version, QEMU startup command, and runtime configuration should be recorded from the actual experimental environment.
+The QEMU startup command, network configuration, and GDB connection procedure are documented in the [Remote Debugging section](#part-a--gdb-remote-debugging).
+
+Scheduling latency was measured on the Ubuntu host under two conditions:
+
+- Normal operation without additional CPU workload.
+- Operation with an additional controlled CPU workload.
+
+The measurement environment and workload configuration are documented in the experimental evidence logs.
+
 
 ### Real-Time Latency Evaluation
 
