@@ -1,0 +1,25 @@
+Remote debugging using 127.0.0.1:1234
+Reading /lib/ld-linux-armhf.so.3 from remote target...
+⚠️ warning: File transfers from remote targets can be slow. Use "set sysroot" to access files locally instead.
+Reading /lib/ld-linux-armhf.so.3 from remote target...
+Reading symbols from target:/lib/ld-linux-armhf.so.3...
+0x76fdee58 in _start () from target:/lib/ld-linux-armhf.so.3
+Breakpoint 1 at 0x40075e: file buggy_app.c, line 28.
+Continuing.
+Reading /lib/libc.so.6 from remote target...
+
+Breakpoint 1, main (argc=1, argv=0x7efffe94) at buggy_app.c:28
+28	int main(int argc, char *argv[]) {
+23	    long long result = (long long)a * b;
+24	    printf("calculate(%d, %d) = %lld\n", a, b, result);
+25	    return result;
+26	}
+27	
+28	int main(int argc, char *argv[]) {
+29	    printf("=== Buggy App v1.0 – LAB-03 Debug Target ===\n");
+30	
+31	    int arr[5] = {10, 20, 30, 40, 50};
+32	    printf("[TEST1] Processing array of 5 elements\n");
+#0  main (argc=1, argv=0x7efffe94) at buggy_app.c:28
+arr = {2130706295, 100, 0, 2130706279, 2048}
+msg = 0x76fdea3f <_dl_sysdep_start+366> "\230C\260\275\350\360\217c`\347\347\036K{D\333hZ\036\020@\030\032\004\360M\371\345\347\004\222\212FO\360 \fO\360\024\016\035F\036F\037F\032F\233F\231F\002\223\005\223\003\223\001\223\t\223\b\223\a\223\006\223"
