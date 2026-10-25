@@ -1,0 +1,8 @@
+stress-ng: info:  [10586] setting to a 20 secs run per stressor
+stress-ng: info:  [10586] dispatching hogs: 1 cpu
+stress-ng: info:  [10589] cpu: for stable load results, select a specific cpu stress method with --cpu-method other than 'all'
+stress-ng: info:  [10586] skipped: 0
+stress-ng: info:  [10586] passed: 1: cpu (1)
+stress-ng: info:  [10586] failed: 0
+stress-ng: info:  [10586] metrics untrustworthy: 0
+stress-ng: info:  [10586] successful run completed in 20.00 secs
