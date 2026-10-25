@@ -337,21 +337,22 @@ Scheduling latency was measured on the Ubuntu host under two conditions:
 
 The measurement environment and workload configuration are documented in the experimental evidence logs.
 
-
 ### Real-Time Latency Evaluation
 
-Scheduling latency is evaluated using cyclictest.
+Scheduling latency was evaluated using `cyclictest` on the Ubuntu development host.
 
-Two experimental conditions are relevant:
+Two experimental conditions were tested:
 
-1. Normal operation without an additional background workload.
-2. Operation under a controlled background workload.
+1. **Normal operation:** Cyclictest was executed without an additional CPU stress workload.
+2. **Under CPU load:** Cyclictest was executed while `stress-ng` generated an additional CPU workload.
 
-For each condition, the minimum, average, and maximum scheduling latencies should be recorded.
+The CPU load generator was configured with one CPU worker, a target load of 50%, and a duration of 20 seconds.
 
-The experimental results should also include the cyclictest parameters, latency histograms, and a comparison of both operating conditions.
+The experiment collected scheduling latency measurements under both conditions to compare minimum, average, and maximum latency values.
 
-Only measurements obtained from actual experiments should be reported.
+Latency distributions were visualized using histograms generated from the collected cyclictest logs.
+
+The original measurement logs, test environment information, and CPU workload configuration are available in the Experimental Evidence section.
 
 
 ### Latency Comparison
