@@ -357,20 +357,25 @@ The original measurement logs, test environment information, and CPU workload co
 
 ### Latency Comparison
 
-| Measurement | Normal Operation | Under Load |
-|---|---|---|
-| Minimum Latency (us) | 1 | 1 |
-| Average Latency (us) | 1 | 1 |
-| Maximum Latency (us) | 14 | 12 |
-| Number of Samples | 10.000 | 10.000 |
+| Measurement | Normal Operation | Under CPU Load |
+|---|---:|---:|
+| Minimum Latency (µs) | 1 | 1 |
+| Average Latency (µs) | 1 | 1 |
+| Maximum Latency (µs) | 14 | 12 |
+| Number of Samples | 10,000 | 10,000 |
+
 
 ### Analysis
 
-Scheduling latency depends on CPU utilization, scheduling behavior, kernel configuration, and background system activity.
+The cyclictest results show a minimum latency of 1 µs and an average latency of 1 µs under both experimental conditions.
 
-The experimental comparison should determine whether additional system load increases average latency, maximum latency, or latency variability.
+The maximum recorded latency was 14 µs during normal operation and 12 µs under additional CPU load, representing a difference of 2 µs.
 
-The conclusions must be based on the collected measurements and their corresponding histograms.
+Under the tested conditions, the additional CPU workload did not produce an increase in the observed maximum latency.
+
+However, this result does not demonstrate that CPU load improves real-time scheduling performance. Latency measurements can vary depending on system activity, kernel configuration, and experimental conditions.
+
+Repeated measurements would be necessary to determine whether the observed difference is consistent and statistically meaningful.
 
 
 ### Cyclictest Latency Histograms
@@ -386,10 +391,6 @@ The conclusions must be based on the collected measurements and their correspond
 The histograms illustrate the distribution of scheduling latency under normal operation and additional CPU load.
 
 The horizontal axis represents scheduling latency in microseconds, while the vertical axis represents the number of recorded samples.
-
-The maximum observed latency was 14 microseconds during normal operation and 12 microseconds under additional CPU load.
-
-The difference does not necessarily indicate better real-time performance under load. Repeated measurements are required to assess consistency.
 
 
 ## Troubleshooting
