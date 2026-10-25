@@ -249,6 +249,87 @@ Measurements may vary depending on CPU load, kernel configuration, and host envi
 
 Detailed experimental outputs should be checked in the `logs/` directory and the [Lab 03 Report](report/SE201573_DinhQuangNgoc_Lab03_Report.pdf).
 
+
+### Experimental Evidence
+
+The experiments were conducted to evaluate debugging techniques, memory management, system call behavior, CPU performance, and scheduling latency.
+
+The collected experimental evidence is organized in the `logs/` directory.
+
+| Experiment | Evidence File | Description |
+|---|---|---|
+| GDB Remote Debugging | `logs/gdb_session.txt` | Breakpoints, variables, and debugging results |
+| Valgrind Memory Analysis | `logs/valgrind_report.txt` | Memory leak detection before correction |
+| Memory Leak Verification | `logs/valgrind_fixed.txt` | Memory analysis after correction |
+| System Call Analysis | `logs/strace_summary.txt` | System call statistics |
+| CPU Performance Analysis | `logs/perf_stat.txt` | CPU performance measurements |
+| CPU Profiling | `logs/perf_report.txt` | Function-level profiling results |
+| Real-Time Latency Analysis | `logs/hist_standard.txt` | Scheduling latency histogram and statistics |
+
+### Experimental Environment
+
+The laboratory experiments use an Ubuntu Linux development host and an ARM Cortex-A9 target emulated using QEMU.
+
+| Component | Configuration |
+|---|---|
+| Development Host | Ubuntu Linux (x86-64) |
+| Target Architecture | ARMv7-A |
+| Target Processor | ARM Cortex-A9 |
+| Emulator | QEMU |
+| Target Machine | `vexpress-a9` |
+| Cross Compiler | `arm-linux-gnueabihf-gcc` |
+| Debugger | GDB Multiarch and gdbserver |
+| Memory Analysis Tool | Valgrind |
+| System Call Analysis Tool | strace |
+| CPU Profiling Tool | perf |
+| Latency Measurement Tool | cyclictest |
+
+The exact kernel version, QEMU startup command, and runtime configuration should be recorded from the actual experimental environment.
+
+### Real-Time Latency Evaluation
+
+Scheduling latency is evaluated using cyclictest.
+
+Two experimental conditions are relevant:
+
+1. Normal operation without an additional background workload.
+2. Operation under a controlled background workload.
+
+For each condition, the minimum, average, and maximum scheduling latencies should be recorded.
+
+The experimental results should also include the cyclictest parameters, latency histograms, and a comparison of both operating conditions.
+
+Only measurements obtained from actual experiments should be reported.
+
+
+### Latency Comparison
+
+| Measurement | Normal Operation | Under Load |
+|---|---|---|
+| Minimum Latency (us) | 1 | 1 |
+| Average Latency (us) | 1 | 1 |
+| Maximum Latency (us) | 14 | 12 |
+| Number of Samples | 10.000 | 10.000 |
+
+### Analysis
+
+Scheduling latency depends on CPU utilization, scheduling behavior, kernel configuration, and background system activity.
+
+The experimental comparison should determine whether additional system load increases average latency, maximum latency, or latency variability.
+
+The conclusions must be based on the collected measurements and their corresponding histograms.
+
+
+### Experimental Evidence
+
+- [Normal Operation Log](logs/cyclictest_normal.txt)
+- [Under Load Log](logs/cyclictest_under_load.txt)
+- [Test Environment](logs/cyclictest_environment.txt)
+- [CPU Load Configuration](logs/cyclictest_load_generator.txt)
+
+The recorded latency histograms are included in the corresponding cyclictest log files.
+
+
 ## Troubleshooting
 
 | Problem | Suggested Solution |
