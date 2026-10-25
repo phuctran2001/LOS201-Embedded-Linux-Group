@@ -320,6 +320,25 @@ The experimental comparison should determine whether additional system load incr
 The conclusions must be based on the collected measurements and their corresponding histograms.
 
 
+### Cyclictest Latency Histograms
+
+**Figure 2. Scheduling Latency During Normal Operation**
+
+![Normal Operation Histogram](diagrams/cyclictest_normal_histogram.svg)
+
+**Figure 3. Scheduling Latency Under Additional CPU Load**
+
+![Under Load Histogram](diagrams/cyclictest_under_load_histogram.svg)
+
+The histograms illustrate the distribution of scheduling latency under normal operation and additional CPU load.
+
+The horizontal axis represents scheduling latency in microseconds, while the vertical axis represents the number of recorded samples.
+
+The maximum observed latency was 14 microseconds during normal operation and 12 microseconds under additional CPU load.
+
+The difference does not necessarily indicate better real-time performance under load. Repeated measurements are required to assess consistency.
+
+
 ### Experimental Evidence
 
 - [Normal Operation Log](logs/cyclictest_normal.txt)
