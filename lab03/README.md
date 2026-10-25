@@ -179,6 +179,93 @@ The remote connection requires the correct QEMU network or port-forwarding confi
 
 **Analysis:** Inspect variables, breakpoints, and call stacks to identify defects such as array out-of-bounds access, use-after-free, and integer overflow.
 
+
+#### Remote Debugging Verification
+
+The remote debugging experiment was successfully verified using GDB Multiarch on the Ubuntu host and gdbserver running inside the QEMU ARM guest.
+
+The ARM target was emulated using the `vexpress-a9` machine with an ARM Cortex-A9 processor.
+
+QEMU user-mode networking was configured with TCP port forwarding from `127.0.0.1:1234` on the Ubuntu host to port `1234` on the ARM guest.
+
+The ARM guest was configured with the IPv4 address `10.0.2.15`.
+
+GDB Multiarch successfully connected to gdbserver and stopped the application at a breakpoint in the `main()` function.
+
+The debugging session verified the following operations:
+
+- Establishing a remote debugging connection.
+- Setting a breakpoint at `main()`.
+- Continuing execution until the breakpoint.
+- Displaying source code using `list`.
+- Inspecting the call stack using `backtrace`.
+- Inspecting local variables using `info locals`.
+
+The host executable and the executable packaged in the QEMU initramfs were verified to have identical SHA-256 hashes.
+
+**Verification Log:** [GDB Remote Debugging Verification](logs/gdb_verification.txt)
+
+The original debugging log is preserved separately as evidence of the initial debugging process.
+
+
+#### Reproducing the Remote Debugging Experiment
+
+Run the following command from the repository root on the Ubuntu host:
+
+```bash
+qemu-system-arm \
+  -M vexpress-a9 \
+  -cpu cortex-a9 \
+  -m 512M \
+  -smp 2 \
+  -nographic \
+  -kernel lab01/output/zImage \
+  -dtb lab01/output/vexpress-v2p-ca9.dtb \
+  -initrd lab03/output/initramfs_lab3.cpio.gz \
+  -append 'console=ttyAMA0,115200 rdinit=/init mem=512M' \
+  -netdev user,id=net0,hostfwd=tcp:127.0.0.1:1234-:1234 \
+  -device virtio-net-device,netdev=net0
+```
+
+Inside the ARM guest, configure the network interface:
+
+```sh
+ip link set eth0 up
+udhcpc -i eth0
+ip addr show eth0
+```
+
+If DHCP does not assign the acquired IPv4 address to the interface, verify the existing addresses and configure the guest network accordingly.
+
+Start gdbserver inside the ARM guest:
+
+```sh
+gdbserver 0.0.0.0:1234 /usr/bin/buggy_app
+```
+
+On the Ubuntu host, open a second terminal:
+
+```bash
+cd lab03
+gdb-multiarch -q ./apps/buggy_app
+```
+
+Execute the following commands inside GDB:
+
+```gdb
+set pagination off
+set remotetimeout 10
+target remote 127.0.0.1:1234
+break main
+continue
+list
+backtrace
+info locals
+```
+
+The executable loaded by GDB must match the executable running inside the ARM guest.
+
+
 ### Part B — Memory Analysis with Valgrind
 
 **Objective:** Detect memory leaks and verify memory management corrections.
