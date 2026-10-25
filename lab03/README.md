@@ -46,7 +46,15 @@ The practical work and experimental evidence are documented in the [Lab 03 Repor
 
 ## System Architecture
 
-<img width="1484" height="1060" alt="image" src="https://github.com/user-attachments/assets/45eb2317-13b2-4a0b-8a2b-33475b8722cb" />
+
+![LAB03 System Architecture](diagrams/lab03_block_diagram.png)
+
+**Figure 1. LAB03 System Architecture**
+
+The diagram illustrates the Ubuntu development host, the ARM Cortex-A9 target running under QEMU, and the remote debugging connection between GDB Multiarch and gdbserver.
+
+The connection arrows represent debugging commands, execution control, and information exchanged between the host and target.
+
 
 
 The development environment consists of an Ubuntu host and an ARM target emulated using QEMU.
